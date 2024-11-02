@@ -1,0 +1,7 @@
+# Dockerfile.nginx
+
+FROM nginx:latest
+
+# Install necessary packages
+RUN apt-get update && apt-get install -y \
+    pdftk-java \
