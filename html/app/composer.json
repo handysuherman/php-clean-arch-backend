@@ -34,7 +34,8 @@
         "zircote/swagger-php": "^4.11",
         "doctrine/annotations": "^2.0",
         "intervention/image": "^3.9",
-        "phpmailer/phpmailer": "^6.9"
+        "phpmailer/phpmailer": "^6.9",
+        "mbezhanov/faker-provider-collection": "^2.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
