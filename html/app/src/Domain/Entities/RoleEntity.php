@@ -2,7 +2,8 @@
 
 namespace app\src\Domain\Entities;
 
-// TODO: MAX LENGTH
+use app\src\Common\Exceptions\ValidationExceptions\EntityLengthLimitExceeded;
+
 class RoleEntity
 {
     private string $uid;
@@ -22,6 +23,9 @@ class RoleEntity
 
     public function setUid(string $value)
     {
+        if (strlen($value) > 255) {
+            throw new EntityLengthLimitExceeded("role.uid length limit exceeded");
+        }
         $this->uid = $value;
     }
 
@@ -32,6 +36,9 @@ class RoleEntity
 
     public function setRole_name(string $value)
     {
+        if (strlen($value) > 255) {
+            throw new EntityLengthLimitExceeded("role.role_name length limit exceeded");
+        }
         $this->role_name = $value;
     }
 
@@ -57,11 +64,15 @@ class RoleEntity
 
     public function getCreated_at(): string
     {
+
         return $this->created_at;
     }
 
     public function setCreated_at(string $value)
     {
+        if (strlen($value) > 255) {
+            throw new EntityLengthLimitExceeded("role.created_at length limit exceeded");
+        }
         $this->created_at = $value;
     }
 
@@ -72,6 +83,9 @@ class RoleEntity
 
     public function setCreated_by(string $value)
     {
+        if (strlen($value) > 255) {
+            throw new EntityLengthLimitExceeded("role.created_by length limit exceeded");
+        }
         $this->created_by = $value;
     }
 
@@ -92,6 +106,9 @@ class RoleEntity
 
     public function setIs_activated_updated_at(string $value)
     {
+        if (strlen($value) > 255) {
+            throw new EntityLengthLimitExceeded("role.is_activated_updated_at length limit exceeded");
+        }
         $this->is_activated_updated_at = $value;
     }
 
@@ -102,6 +119,9 @@ class RoleEntity
 
     public function setIs_activated_updated_by(string $value)
     {
+        if (strlen($value) > 255) {
+            throw new EntityLengthLimitExceeded("role.is_activated_updated_by length limit exceeded");
+        }
         $this->is_activated_updated_by = $value;
     }
 }

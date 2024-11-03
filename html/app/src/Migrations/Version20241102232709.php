@@ -24,6 +24,7 @@ final class Version20241102232709 extends AbstractMigration
         CREATE TABLE IF NOT EXISTS `user_credentials` (
   `uid` varchar(255) PRIMARY KEY NOT NULL,
   `user_uid` varchar(255) NOT NULL,
+  `has_hashed_password` boolean NOT NULL DEFAULT false,
   `hashed_password` text NOT NULL,
   `password_changed_at` varchar(255) NOT NULL DEFAULT '0000-00-00T00:00:00.000000+00:00' COMMENT 'example: 2024-11-01T11:02:54.210540+00:00',
   `is_password_removed` boolean NOT NULL DEFAULT false,

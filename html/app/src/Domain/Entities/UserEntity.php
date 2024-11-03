@@ -2,6 +2,8 @@
 
 namespace app\src\Domain\Entities;
 
+use app\src\Common\Exceptions\ValidationExceptions\EntityLengthLimitExceeded;
+
 class UserEntity
 {
     private string $uid;
@@ -25,6 +27,9 @@ class UserEntity
 
     public function setUid(string $value)
     {
+        if (strlen($value) > 255) {
+            throw new EntityLengthLimitExceeded("user.uid length limit exceeded");
+        }
         $this->uid = $value;
     }
 
@@ -35,6 +40,9 @@ class UserEntity
 
     public function setFull_name(string $value)
     {
+        if (strlen($value) > 255) {
+            throw new EntityLengthLimitExceeded("user.full_name length limit exceeded");
+        }
         $this->full_name = $value;
     }
 
@@ -95,6 +103,9 @@ class UserEntity
 
     public function setCreated_at(string $value)
     {
+        if (strlen($value) > 255) {
+            throw new EntityLengthLimitExceeded("user.created_at length limit exceeded");
+        }
         $this->created_at = $value;
     }
 
@@ -105,6 +116,9 @@ class UserEntity
 
     public function setUpdated_at(string $value)
     {
+        if (strlen($value) > 255) {
+            throw new EntityLengthLimitExceeded("user.updated_at length limit exceeded");
+        }
         $this->updated_at = $value;
     }
 
@@ -115,6 +129,9 @@ class UserEntity
 
     public function setUpdated_by(string $value)
     {
+        if (strlen($value) > 255) {
+            throw new EntityLengthLimitExceeded("user.updated_by length limit exceeded");
+        }
         $this->updated_by = $value;
     }
 
@@ -135,6 +152,9 @@ class UserEntity
 
     public function setIs_blocked_updated_at(string $value)
     {
+        if (strlen($value) > 255) {
+            throw new EntityLengthLimitExceeded("user.is_blocked_updated_at length limit exceeded");
+        }
         $this->is_blocked_updated_at = $value;
     }
 
@@ -145,6 +165,9 @@ class UserEntity
 
     public function setIs_blocked_updated_by(string $value)
     {
+        if (strlen($value) > 255) {
+            throw new EntityLengthLimitExceeded("user.is_blocked_updated_by length limit exceeded");
+        }
         $this->is_blocked_updated_by = $value;
     }
 }

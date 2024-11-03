@@ -2,7 +2,8 @@
 
 namespace app\src\Domain\Entities;
 
-//TODO: MAX LENGTH
+use app\src\Common\Exceptions\ValidationExceptions\EntityLengthLimitExceeded;
+
 class UserRoleEntity
 {
     private string $uid;
@@ -21,6 +22,9 @@ class UserRoleEntity
 
     public function setUid(string $value)
     {
+        if (strlen($value) > 255) {
+            throw new EntityLengthLimitExceeded("user_role.uid length limit exceeded");
+        }
         $this->uid = $value;
     }
 
@@ -31,6 +35,9 @@ class UserRoleEntity
 
     public function setUser_uid(string $value)
     {
+        if (strlen($value) > 255) {
+            throw new EntityLengthLimitExceeded("user_role.user_uid length limit exceeded");
+        }
         $this->user_uid = $value;
     }
 
@@ -41,6 +48,9 @@ class UserRoleEntity
 
     public function setRole_uid(string $value)
     {
+        if (strlen($value) > 255) {
+            throw new EntityLengthLimitExceeded("user_role.role_uid length limit exceeded");
+        }
         $this->role_uid = $value;
     }
 
@@ -51,6 +61,9 @@ class UserRoleEntity
 
     public function setCreated_at(string $value)
     {
+        if (strlen($value) > 255) {
+            throw new EntityLengthLimitExceeded("user_role.created_at length limit exceeded");
+        }
         $this->created_at = $value;
     }
 
@@ -61,6 +74,9 @@ class UserRoleEntity
 
     public function setCreated_by(string $value)
     {
+        if (strlen($value) > 255) {
+            throw new EntityLengthLimitExceeded("user_role.created_by length limit exceeded");
+        }
         $this->created_by = $value;
     }
 
@@ -81,6 +97,9 @@ class UserRoleEntity
 
     public function setIs_blocked_updated_at(string $value)
     {
+        if (strlen($value) > 255) {
+            throw new EntityLengthLimitExceeded("user_role.is_blocked_updated_at length limit exceeded");
+        }
         $this->is_blocked_updated_at = $value;
     }
 
@@ -91,6 +110,9 @@ class UserRoleEntity
 
     public function setIs_blocked_updated_by(string $value)
     {
+        if (strlen($value) > 255) {
+            throw new EntityLengthLimitExceeded("user_role.is_blocked_updated_by length limit exceeded");
+        }
         $this->is_blocked_updated_by = $value;
     }
 }

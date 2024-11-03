@@ -25,7 +25,7 @@ final class Version20241102232701 extends AbstractMigration
   `uid` varchar(255) PRIMARY KEY NOT NULL,
   `full_name` varchar(255) NOT NULL,
   `full_name_slug` text NOT NULL COMMENT 'this should be created and updated, respectively when full_name changes',
-  `email` varchar(255) NOT NULL,
+  `email` text NOT NULL,
   `profile_pict_url` text,
   `is_email_verified` boolean NOT NULL DEFAULT false COMMENT 'ideally this should be reverted back when email was no longer the same as updated one',
   `date_of_birth` date NOT NULL DEFAULT '0000-00-00',

@@ -2,6 +2,8 @@
 
 namespace app\src\Common\DTOs\Request;
 
+use app\src\Common\Exceptions\ValidationExceptions\DTOLengthLimitExceeded;
+
 class UserDTORequest
 {
     private ?string $uid = null;
@@ -25,6 +27,11 @@ class UserDTORequest
 
     public function setUid(?string $value)
     {
+        if ($value) {
+            if (strlen($value) > 255) {
+                throw new DTOLengthLimitExceeded("user.uid length limit exceeded");
+            }
+        }
         $this->uid = $value;
     }
 
@@ -35,6 +42,11 @@ class UserDTORequest
 
     public function setFull_name(?string $value)
     {
+        if ($value) {
+            if (strlen($value) > 255) {
+                throw new DTOLengthLimitExceeded("user.full_name length limit exceeded");
+            }
+        }
         $this->full_name = $value;
     }
 
@@ -95,6 +107,11 @@ class UserDTORequest
 
     public function setCreated_at(?string $value)
     {
+        if ($value) {
+            if (strlen($value) > 255) {
+                throw new DTOLengthLimitExceeded("user.created_at length limit exceeded");
+            }
+        }
         $this->created_at = $value;
     }
 
@@ -105,6 +122,11 @@ class UserDTORequest
 
     public function setUpdated_at(?string $value)
     {
+        if ($value) {
+            if (strlen($value) > 255) {
+                throw new DTOLengthLimitExceeded("user.updated_at length limit exceeded");
+            }
+        }
         $this->updated_at = $value;
     }
 
@@ -115,6 +137,11 @@ class UserDTORequest
 
     public function setUpdated_by(?string $value)
     {
+        if ($value) {
+            if (strlen($value) > 255) {
+                throw new DTOLengthLimitExceeded("user.updated_by length limit exceeded");
+            }
+        }
         $this->updated_by = $value;
     }
 
@@ -135,6 +162,11 @@ class UserDTORequest
 
     public function setIs_blocked_updated_at(?string $value)
     {
+        if ($value) {
+            if (strlen($value) > 255) {
+                throw new DTOLengthLimitExceeded("user.is_blocked_updated_at length limit exceeded");
+            }
+        }
         $this->is_blocked_updated_at = $value;
     }
 
@@ -145,6 +177,11 @@ class UserDTORequest
 
     public function setIs_blocked_updated_by(?string $value)
     {
+        if ($value) {
+            if (strlen($value) > 255) {
+                throw new DTOLengthLimitExceeded("user.is_blocked_updated_by length limit exceeded");
+            }
+        }
         $this->is_blocked_updated_by = $value;
     }
 }

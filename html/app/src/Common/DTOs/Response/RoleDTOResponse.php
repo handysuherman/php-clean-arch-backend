@@ -2,7 +2,6 @@
 
 namespace app\src\Common\DTOs\Response;
 
-// TODO: MAX LENGTH
 class RoleDTOResponse
 {
     private string $uid;

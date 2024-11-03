@@ -2,7 +2,8 @@
 
 namespace app\src\Common\DTOs\Request;
 
-// TODO: MAX LENGTH
+use app\src\Common\Exceptions\ValidationExceptions\DTOLengthLimitExceeded;
+
 class RoleDTORequest
 {
     private ?string $uid = null;
@@ -22,6 +23,11 @@ class RoleDTORequest
 
     public function setUid(?string $value)
     {
+        if ($value) {
+            if (strlen($value) > 255) {
+                throw new DTOLengthLimitExceeded("role.uid length limit exceeded");
+            }
+        }
         $this->uid = $value;
     }
 
@@ -32,6 +38,11 @@ class RoleDTORequest
 
     public function setRole_name(?string $value)
     {
+        if ($value) {
+            if (strlen($value) > 255) {
+                throw new DTOLengthLimitExceeded("role.role_name length limit exceeded");
+            }
+        }
         $this->role_name = $value;
     }
 
@@ -62,6 +73,11 @@ class RoleDTORequest
 
     public function setCreated_at(?string $value)
     {
+        if ($value) {
+            if (strlen($value) > 255) {
+                throw new DTOLengthLimitExceeded("role.created_at length limit exceeded");
+            }
+        }
         $this->created_at = $value;
     }
 
@@ -72,6 +88,11 @@ class RoleDTORequest
 
     public function setCreated_by(?string $value)
     {
+        if ($value) {
+            if (strlen($value) > 255) {
+                throw new DTOLengthLimitExceeded("role.created_by length limit exceeded");
+            }
+        }
         $this->created_by = $value;
     }
 
@@ -92,6 +113,11 @@ class RoleDTORequest
 
     public function setIs_activated_updated_at(?string $value)
     {
+        if ($value) {
+            if (strlen($value) > 255) {
+                throw new DTOLengthLimitExceeded("role.is_activated_updated_at length limit exceeded");
+            }
+        }
         $this->is_activated_updated_at = $value;
     }
 
@@ -102,6 +128,11 @@ class RoleDTORequest
 
     public function setIs_activated_updated_by(?string $value)
     {
+        if ($value) {
+            if (strlen($value) > 255) {
+                throw new DTOLengthLimitExceeded("role.is_activated_updated_by length limit exceeded");
+            }
+        }
         $this->is_activated_updated_by = $value;
     }
 }
