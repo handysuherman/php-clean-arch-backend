@@ -104,6 +104,26 @@ class RoleQueryBuilder
         }
     }
 
+    public function withSearchableTextFilters(string $search_text)
+    {
+        $search_role_name = new QueryParameterEntity();
+        $search_role_name->setColumn(RoleConstants::ROLE_NAME);
+        $search_role_name->setValue($search_text);
+        $search_role_name->setSql_data_type(\PDO::PARAM_STR);
+        $search_role_name->setTruthy("OR");
+        $search_role_name->setTruthy_operator("LIKE");
+
+        $search_role_name_2 = new QueryParameterEntity();
+        $search_role_name_2->setColumn(RoleConstants::ROLE_NAME);
+        $search_role_name_2->setValue($search_text);
+        $search_role_name_2->setSql_data_type(\PDO::PARAM_STR);
+        $search_role_name_2->setTruthy("AND");
+        $search_role_name_2->setTruthy_operator("LIKE");
+
+        $this->query_filters[] = QueryParameterFactory::toKeyValArray($search_role_name);
+        $this->query_filters[] = QueryParameterFactory::toKeyValArray($search_role_name_2);
+    }
+
     public function withPagination(Pagination $pagination)
     {
         $this->pagination = $pagination;
@@ -127,7 +147,13 @@ class RoleQueryBuilder
                 ];
             }
 
-            $this->sql .= " WHERE " . implode(" " . $filter[QueryConstants::TRUTHY] . " ", $where_clauses);
+            foreach ($where_clauses as $index => $clause) {
+                if ($index == 0) {
+                    $this->sql .= " WHERE " . $clause;
+                } else {
+                    $this->sql .= " " . $filter[QueryConstants::TRUTHY] . " " . $clause;
+                }
+            }
         };
 
         if (!$this->is_count_query) {

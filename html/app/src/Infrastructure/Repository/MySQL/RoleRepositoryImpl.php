@@ -8,12 +8,15 @@ use app\src\Common\Exceptions\SQLExceptions\NoRowsException;
 use app\src\Common\Exceptions\SQLExceptions\SQLException;
 use app\src\Common\Exceptions\SQLExceptions\UnprocessableEntity;
 use app\src\Common\Helpers\DatabaseExceptionHandler;
+use app\src\Common\Helpers\Pagination;
 use app\src\Common\Loggers\Logger;
 use app\src\Domain\Builders\RoleQueryBuilder;
 use app\src\Domain\Builders\UpdateQueryBuilder;
 use app\src\Domain\Entities\RoleEntity;
 use app\src\Domain\Factories\QueryParameterFactory;
 use app\src\Domain\Factories\RoleFactory;
+use app\src\Domain\Params\ListRoleParams;
+use app\src\Infrastructure\Constants\RoleConstants;
 use PDO;
 
 class RoleRepositoryImpl implements RoleRepository
@@ -146,6 +149,64 @@ class RoleRepositoryImpl implements RoleRepository
 
                 throw new NoRowsException(sprintf("%s: %s", $context, SQLExceptionMessageConstants::NO_ROWS_AFFECTED));
             }
+        } catch (SQLException $e) {
+            $this->handleLog($context, $e->getMessage(), $query_builder->getSQL(), $query_builder->getSQLParams());
+
+            throw $e;
+        } catch (\PDOException $e) {
+            $this->handleLog($context, $e->getMessage(), $query_builder->getSQL(), $query_builder->getSQLParams());
+
+            DatabaseExceptionHandler::handle($e, "$context");
+        }
+    }
+
+    public function list(ListRoleParams $params): array
+    {
+        try {
+            $context = "$this->scope.list";
+            $query_builder = new RoleQueryBuilder();
+            $query_builder->withSearchableTextFilters($params->getSearch_text());
+            $query_builder->withPagination($params->getPagination());
+
+
+            if ($params->getQuery_params()) {
+                foreach ($params->getQuery_params() as $query_param) {
+                    $param = QueryParameterFactory::fromArr($query_param);
+
+                    $query_builder->addQueryFilter($param->getColumn(), $param->getValue(), $param->getSql_data_type(), $param->getTruthy_operator(), $param->getTruthy());
+                }
+            }
+
+            if ($params->getWith_sort()) {
+                $query_builder->withSort($params->getSort_property(), $params->getSort_order());
+            }
+
+            if ($params->getWith_range()) {
+                $query_builder->withRangeBetween($params->getRange_property(), $params->getFrom(), $params->getTo());
+            }
+
+            $query_builder->build();
+
+            $sql_params = $query_builder->getSQLParams();
+
+            $statement = $this->connection->prepare($query_builder->getSQL());
+            foreach ($sql_params as $index => $param) {
+                $param = QueryParameterFactory::fromArr($param);
+
+                $statement->bindValue($index + 1, $param->getValue(), $param->getSql_data_type());
+            }
+
+            $statement->execute();
+
+            $result = [];
+
+            foreach ($statement as $row) {
+                $data = RoleFactory::fromRow($row);
+
+                $result[] = RoleFactory::toKeyValArray($data);
+            }
+
+            return $result;
         } catch (SQLException $e) {
             $this->handleLog($context, $e->getMessage(), $query_builder->getSQL(), $query_builder->getSQLParams());
 

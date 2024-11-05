@@ -91,7 +91,13 @@ class UpdateQueryBuilder
 
         $this->sql .= " SET " . implode(", ", $set_clauses);
 
-        $this->sql .= " WHERE " . implode(" " . $filter[QueryConstants::TRUTHY] . " ", $where_clauses);
+        foreach ($where_clauses as $index => $clause) {
+            if ($index == 0) {
+                $this->sql .= " WHERE " . $clause;
+            } else {
+                $this->sql .= " " . $filter[QueryConstants::TRUTHY] . " " . $clause;
+            }
+        }
     }
 
 

@@ -3,11 +3,13 @@
 use app\src\Application\Config\Config;
 use app\src\Common\Databases\MySQL;
 use app\src\Common\Helpers\Generation;
+use app\src\Common\Helpers\Pagination;
 use app\src\Common\Loggers\Logger;
 use app\src\Domain\Entities\QueryParameterEntity;
 use app\src\Domain\Entities\RoleEntity;
 use app\src\Domain\Factories\QueryParameterFactory;
 use app\src\Domain\Factories\RoleFactory;
+use app\src\Domain\Params\ListRoleParams;
 use app\src\Infrastructure\Constants\RoleConstants;
 use app\src\Infrastructure\Repository\MySQL\RoleRepository;
 use app\src\Infrastructure\Repository\MySQL\RoleRepositoryImpl;
@@ -126,6 +128,30 @@ class RoleRepositoryImplTest extends TestCase
         $this->assertEquals($arg->getIs_activated(), $response->getIs_activated());
         $this->assertEquals($arg->getIs_activated_updated_at(), $response->getIs_activated_updated_at());
         $this->assertEquals($arg->getIs_activated_updated_by(), $response->getIs_activated_updated_by());
+    }
+
+    public function testList()
+    {
+        $arg = $this->createRandom();
+        $list_params = new ListRoleParams();
+        $list_params->setPagination(new Pagination());
+        $list_params->setSearch_text($arg->getRole_name());
+
+        $is_activated_flag = new QueryParameterEntity();
+        $is_activated_flag->setColumn(RoleConstants::IS_ACTIVATED);
+        $is_activated_flag->setValue($arg->getIs_activated());
+        $is_activated_flag->setSql_data_type(\PDO::PARAM_BOOL);
+        $is_activated_flag->setTruthy("AND");
+        $is_activated_flag->setTruthy_operator("=");
+
+        $filters = [];
+
+        $filters[] = QueryParameterFactory::toKeyValArray($is_activated_flag);
+
+        $list_params->setQuery_params($filters);
+
+        $response = $this->repository->list($list_params);
+        $this->assertNotEmpty($response);
     }
 
     private function createRandom(): RoleEntity

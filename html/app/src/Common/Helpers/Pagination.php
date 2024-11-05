@@ -10,7 +10,7 @@ class Pagination
 
     private int $page = 1;
 
-    public function __construct(string $size, string $page)
+    public function __construct(string $size = "10", string $page = "1")
     {
         if (is_numeric($size) && (int)$size !== 0) {
             $this->size = (int)$size;
