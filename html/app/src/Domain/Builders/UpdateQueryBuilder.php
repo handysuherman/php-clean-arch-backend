@@ -1,13 +1,14 @@
 <?php
 
-namespace app\Src\Domain\QueryBuilders;
+namespace app\Src\Domain\Builders;
 
 use app\src\Common\Constants\QueryConstants;
 use app\src\Common\Exceptions\SQLExceptions\UnprocessableEntity;
+use app\src\Domain\Entities\QueryParameterEntity;
 
-class RoleUpdateQueryBuilder
+class UpdateQueryBuilder
 {
-    private string $table_name = "roles";
+    private string $table_name;
 
     private array $truthy = ["AND", "OR"];
     private array $truthy_operator = ["=", "!=", "LIKE"];
@@ -19,15 +20,19 @@ class RoleUpdateQueryBuilder
     private array $sql_params = [];
     private ?string $sql = null;
 
-    public function __construct() {}
+    public function __construct(string $table_name) 
+    {
+        $this->table_name = $table_name;
+    }
 
     public function addUpdateColumn(string $column, mixed $value, mixed $sql_data_type)
     {
-        $this->updated_columns[] = [
-            QueryConstants::COLUMN => $column,
-            QueryConstants::VALUE => $value,
-            QueryConstants::SQL_DATA_TYPE => $sql_data_type,
-        ];
+        $arg = new QueryParameterEntity();
+        $arg->setColumn($column);
+        $arg->setValue($value);
+        $arg->setSql_data_type($sql_data_type);
+
+        $this->updated_columns[] = $arg->toKeyValArray();
     }
 
     public function addQueryFilter(string $column, string $truthy_operator = "=", mixed $value, mixed $sql_data_type, string $truthy = "AND")
@@ -40,13 +45,14 @@ class RoleUpdateQueryBuilder
             $truthy_operator = "=";
         }
 
-        $this->query_filters[] = [
-            QueryConstants::COLUMN => $column,
-            QueryConstants::TRUTHY => $truthy,
-            QueryConstants::TRUTHY_OPERATOR => $truthy_operator,
-            QueryConstants::VALUE => $value,
-            QueryConstants::SQL_DATA_TYPE => $sql_data_type,
-        ];
+        $arg = new QueryParameterEntity();
+        $arg->setColumn($column);
+        $arg->setValue($value);
+        $arg->setSql_data_type($sql_data_type);
+        $arg->setTruthy($truthy);
+        $arg->setTruthy_operator($truthy_operator);
+
+        $this->query_filters[] = $arg->toKeyValArray();
     }
 
     public function build()

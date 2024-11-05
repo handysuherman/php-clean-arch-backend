@@ -1,14 +1,15 @@
 <?php
 
-namespace app\Src\Domain\QueryBuilders;
+namespace app\Src\Domain\Builders;
 
 use app\src\Common\Constants\QueryConstants;
 use app\src\Common\Enums\DurationType;
 use app\src\Common\Helpers\Pagination;
 use app\src\Common\Helpers\Time;
+use app\src\Domain\Entities\QueryParameterEntity;
 use app\src\Infrastructure\Constants\RoleConstants;
 
-class RoleSelectQueryBuilder
+class RoleQueryBuilder
 {
     private string $table_name = "roles";
 
@@ -54,13 +55,14 @@ class RoleSelectQueryBuilder
             $truthy_operator = "=";
         }
 
-        $this->query_filters[] = [
-            QueryConstants::COLUMN => $column,
-            QueryConstants::TRUTHY => $truthy,
-            QueryConstants::TRUTHY_OPERATOR => $truthy_operator,
-            QueryConstants::VALUE => $value,
-            QueryConstants::SQL_DATA_TYPE => $sql_data_type,
-        ];
+        $arg = new QueryParameterEntity();
+        $arg->setColumn($column);
+        $arg->setValue($value);
+        $arg->setSql_data_type($sql_data_type);
+        $arg->setTruthy($truthy);
+        $arg->setTruthy_operator($truthy_operator);
+
+        $this->query_filters[] = $arg->toKeyValArray();
     }
 
     public function withRangeBetween(string $range_between_column = RoleConstants::CREATED_AT, ?string $from = null, ?string $to = null)
