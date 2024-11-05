@@ -2,6 +2,7 @@
 
 namespace app\src\Domain\Builders;
 
+use app\src\Common\Constants\Exceptions\SQLExceptionMessageConstants;
 use app\src\Common\Constants\QueryConstants;
 use app\src\Common\Exceptions\SQLExceptions\UnprocessableEntity;
 use app\src\Domain\Entities\QueryParameterEntity;
@@ -59,11 +60,11 @@ class UpdateQueryBuilder
     public function build()
     {
         if (empty($this->updated_columns)) {
-            throw new UnprocessableEntity("no updated columns speficied for the operation");
+            throw new UnprocessableEntity(SQLExceptionMessageConstants::NO_UPDATED_COLUMNS);
         }
 
         if (empty($this->query_filters)) {
-            throw new UnprocessableEntity("no provided parameters for the operation");
+            throw new UnprocessableEntity(SQLExceptionMessageConstants::NO_PARAMETERS_BUILDER_PROVIDED);
         }
 
         $this->sql = "UPDATE $this->table_name";

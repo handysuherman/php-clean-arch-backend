@@ -38,38 +38,11 @@ class RoleRepositoryImplTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testFind()
+    public function testFindByUid()
     {
         $arg = $this->createRandom();
 
-        $response = $this->repository->find($arg->getUid());
-
-        $this->assertNotEmpty($response);
-        $this->assertEquals($arg->getUid(), $response->getUid());
-        $this->assertEquals($arg->getRole_name(), $response->getRole_name());
-        $this->assertEquals($arg->getRole_name_slug(), $response->getRole_name_slug());
-        $this->assertEquals($arg->getCreated_at(), $response->getCreated_at());
-        $this->assertEquals($arg->getCreated_by(), $response->getCreated_by());
-        $this->assertEquals($arg->getIs_activated(), $response->getIs_activated());
-        $this->assertEquals($arg->getIs_activated_updated_at(), $response->getIs_activated_updated_at());
-        $this->assertEquals($arg->getIs_activated_updated_by(), $response->getIs_activated_updated_by());
-    }
-
-    public function testFindWithVariousFilters()
-    {
-        $arg = $this->createRandom();
-
-        $filters = [];
-
-        $role_name = new QueryParameterEntity();
-        $role_name->setColumn(RoleConstants::ROLE_NAME);
-        $role_name->setValue($arg->getRole_name());
-        $role_name->setSql_data_type(\PDO::PARAM_STR);
-        $role_name->setTruthy_operator("=");
-
-        $filters[] = QueryParameterFactory::toKeyValArray($role_name);
-
-        $response = $this->repository->find($arg->getUid(), $filters);
+        $response = $this->repository->findByUid($arg->getUid());
 
         $this->assertNotEmpty($response);
         $this->assertEquals($arg->getUid(), $response->getUid());
@@ -97,7 +70,7 @@ class RoleRepositoryImplTest extends TestCase
 
         $this->repository->update($arg->getUid(), $update_filters);
 
-        $response = $this->repository->find($arg->getUid());
+        $response = $this->repository->findByUid($arg->getUid());
 
         $this->assertNotEmpty($response);
 
@@ -139,7 +112,7 @@ class RoleRepositoryImplTest extends TestCase
 
         $this->repository->update($arg->getUid(), $update_filters, $filters);
 
-        $response = $this->repository->find($arg->getUid(), $filters);
+        $response = $this->repository->findByUid($arg->getUid());
 
         $this->assertNotEmpty($response);
 
@@ -161,7 +134,7 @@ class RoleRepositoryImplTest extends TestCase
 
         $this->repository->save($arg);
 
-        $response = $this->repository->find($arg->getUid());
+        $response = $this->repository->findByUid($arg->getUid());
 
         return $response;
     }

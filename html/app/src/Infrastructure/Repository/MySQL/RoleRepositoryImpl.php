@@ -2,6 +2,7 @@
 
 namespace app\src\Infrastructure\Repository\MySQL;
 
+use app\src\Common\Constants\Exceptions\SQLExceptionMessageConstants;
 use app\src\Common\Constants\QueryConstants;
 use app\src\Common\Exceptions\SQLExceptions\NoRowsException;
 use app\src\Common\Exceptions\SQLExceptions\SQLException;
@@ -64,22 +65,12 @@ class RoleRepositoryImpl implements RoleRepository
         }
     }
 
-    public function find(string $cursor, ?array $query_params = null): RoleEntity
+    public function findByUid(string $cursor): RoleEntity
     {
         try {
             $context = "$this->scope.find";
             $query_builder = new RoleQueryBuilder();
-
-            if ($query_params) {
-                foreach ($query_params as $query_param) {
-                    $param = QueryParameterFactory::fromArr($query_param);
-
-                    $query_builder->addQueryFilter($param->getColumn(), $param->getValue(), $param->getSql_data_type(), $param->getTruthy_operator(), $param->getTruthy());
-                }
-            } else {
-                $query_builder->addQueryFilter("uid", $cursor, \PDO::PARAM_STR, "=");
-            }
-
+            $query_builder->addQueryFilter("uid", $cursor, \PDO::PARAM_STR, "=");
             $query_builder->build();
 
             $sql_params = $query_builder->getSQLParams();
@@ -130,7 +121,7 @@ class RoleRepositoryImpl implements RoleRepository
             }
 
             if (count($params) < 1) {
-                throw new UnprocessableEntity("no updated columns speficied");
+                throw new UnprocessableEntity(SQLExceptionMessageConstants::NO_UPDATED_COLUMNS);
             }
 
             foreach ($params as $updated_param) {
@@ -151,9 +142,9 @@ class RoleRepositoryImpl implements RoleRepository
             $statement->execute();
 
             if ($statement->rowCount() === 0) {
-                $this->handleLog($context, "no rows affected", $query_builder->getSQL(), $query_builder->getSQLParams());
+                $this->handleLog($context, SQLExceptionMessageConstants::NO_ROWS_AFFECTED, $query_builder->getSQL(), $query_builder->getSQLParams());
 
-                throw new NoRowsException("$context.no_rows_affected");
+                throw new NoRowsException(sprintf("%s: %s", $context, SQLExceptionMessageConstants::NO_ROWS_AFFECTED));
             }
         } catch (SQLException $e) {
             $this->handleLog($context, $e->getMessage(), $query_builder->getSQL(), $query_builder->getSQLParams());

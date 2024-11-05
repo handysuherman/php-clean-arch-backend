@@ -10,7 +10,7 @@ interface RoleRepository
 {
     public function save(RoleEntity $arg): void;
     public function update(string $cursor, array $params, ?array $query_params = null): void;
-    public function find(string $cursor, ?array $query_params = null): RoleEntity;
+    public function findByUid(string $cursor): RoleEntity;
     // public function list(Pagination $pagination, array $query, string $sort_by = "created_at", string $sort_order = 'ASC'): array;
     // public function count(array $query): int;
 };
