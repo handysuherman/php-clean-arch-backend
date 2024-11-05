@@ -11,7 +11,6 @@ use app\src\Domain\Builders\UpdateQueryBuilder;
 use app\src\Domain\Entities\RoleEntity;
 use app\src\Domain\Factories\QueryParameterFactory;
 use app\src\Domain\Factories\RoleFactory;
-use OpenApi\Annotations\QueryParameter;
 use PDO;
 
 class RoleRepositoryImpl implements RoleRepository

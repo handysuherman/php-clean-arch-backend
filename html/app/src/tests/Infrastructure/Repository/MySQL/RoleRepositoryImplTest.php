@@ -112,6 +112,48 @@ class RoleRepositoryImplTest extends TestCase
         $this->assertEquals($arg->getIs_activated_updated_by(), $response->getIs_activated_updated_by());
     }
 
+    public function testUpdateRoleNameOnlyWithVariousFilters()
+    {
+        $arg = $this->createRandom();
+
+
+        $update_filters = [];
+
+        $updated_role_name = new QueryParameterEntity();
+        $updated_role_name->setColumn(RoleConstants::ROLE_NAME);
+        $updated_role_name->setValue(Generation::randomString(100));
+        $updated_role_name->setSql_data_type(\PDO::PARAM_STR);
+
+        $update_filters[] = QueryParameterFactory::toKeyValArray($updated_role_name);
+
+        $filters = [];
+
+        $role_name_slug = new QueryParameterEntity();
+        $role_name_slug->setColumn(RoleConstants::ROLE_NAME_SLUG);
+        $role_name_slug->setValue($arg->getRole_name_slug());
+        $role_name_slug->setSql_data_type(\PDO::PARAM_STR);
+        $role_name_slug->setTruthy_operator("=");
+
+        $filters[] = QueryParameterFactory::toKeyValArray($role_name_slug);
+
+        $this->repository->update($arg->getUid(), $update_filters, $filters);
+
+        $response = $this->repository->find($arg->getUid(), $filters);
+
+        $this->assertNotEmpty($response);
+
+        $this->assertNotEquals($arg->getRole_name(), $response->getRole_name());
+        $this->assertEquals($updated_role_name->getValue(), $response->getRole_name());
+
+        $this->assertEquals($arg->getUid(), $response->getUid());
+        $this->assertEquals($arg->getRole_name_slug(), $response->getRole_name_slug());
+        $this->assertEquals($arg->getCreated_at(), $response->getCreated_at());
+        $this->assertEquals($arg->getCreated_by(), $response->getCreated_by());
+        $this->assertEquals($arg->getIs_activated(), $response->getIs_activated());
+        $this->assertEquals($arg->getIs_activated_updated_at(), $response->getIs_activated_updated_at());
+        $this->assertEquals($arg->getIs_activated_updated_by(), $response->getIs_activated_updated_by());
+    }
+
     private function createRandom(): RoleEntity
     {
         $arg = RoleFactory::createRandomEntity();

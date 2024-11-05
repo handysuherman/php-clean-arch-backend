@@ -36,7 +36,7 @@ class UpdateQueryBuilder
         $this->updated_columns[] = QueryParameterFactory::toKeyValArray($arg);
     }
 
-    public function addQueryFilter(string $column, mixed $value, mixed $sql_data_type, string $truthy_operator = "=", string $truthy = "AND")
+    public function addQueryFilter(string $column, mixed $value, mixed $sql_data_type, ?string $truthy_operator = "=", ?string $truthy = "AND")
     {
         if (!in_array($truthy, $this->truthy)) {
             $truthy = "AND";
