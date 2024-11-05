@@ -8,7 +8,6 @@ use app\src\Common\Exceptions\SQLExceptions\NoRowsException;
 use app\src\Common\Exceptions\SQLExceptions\SQLException;
 use app\src\Common\Exceptions\SQLExceptions\UnprocessableEntity;
 use app\src\Common\Helpers\DatabaseExceptionHandler;
-use app\src\Common\Helpers\Pagination;
 use app\src\Common\Loggers\Logger;
 use app\src\Domain\Builders\RoleQueryBuilder;
 use app\src\Domain\Builders\UpdateQueryBuilder;

@@ -2,7 +2,6 @@
 
 namespace app\src\Infrastructure\Repository\MySQL;
 
-use app\src\Common\Helpers\Pagination;
 use app\src\Domain\Entities\RoleEntity;
 use app\src\Domain\Params\RoleQueryParams;
 
