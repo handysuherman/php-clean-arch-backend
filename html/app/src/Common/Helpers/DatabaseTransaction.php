@@ -2,6 +2,11 @@
 
 namespace app\src\Common\Helpers;
 
+use app\src\Common\Exceptions\SQLExceptions\ConflictException;
+use app\src\Common\Exceptions\SQLExceptions\ConnectionDoneException;
+use app\src\Common\Exceptions\SQLExceptions\NoRowsException;
+use app\src\Common\Exceptions\SQLExceptions\SQLException;
+use app\src\Common\Exceptions\SQLExceptions\TransactionRollbackException;
 use PDO;
 
 class DatabaseTransaction
@@ -31,9 +36,17 @@ class DatabaseTransaction
             $pdo->commit();
 
             return $result;
+        } catch (SQLException $e) {
+            $pdo->rollBack();
+ 
+             throw $e;
         } catch (\PDOException $e) {
             $pdo->rollBack();
-            throw new \Exception("Transaction failed: " . $e->getMessage(), 0, $e);
+            if ($e->getCode() === "08003") {
+                throw new ConnectionDoneException('Database connection has been closed: ' . $e->getMessage());
+            };
+            
+            throw new TransactionRollbackException("Transaction failed: " . $e->getMessage(), 0, $e);
         } catch (\Exception $e) {
             $pdo->rollBack();
             throw $e;

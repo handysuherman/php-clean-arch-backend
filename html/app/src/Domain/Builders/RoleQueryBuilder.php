@@ -1,17 +1,18 @@
 <?php
 
-namespace app\Src\Domain\Builders;
+namespace app\src\Domain\Builders;
 
 use app\src\Common\Constants\QueryConstants;
 use app\src\Common\Enums\DurationType;
 use app\src\Common\Helpers\Pagination;
 use app\src\Common\Helpers\Time;
 use app\src\Domain\Entities\QueryParameterEntity;
+use app\src\Domain\Factories\QueryParameterFactory;
 use app\src\Infrastructure\Constants\RoleConstants;
 
 class RoleQueryBuilder
 {
-    private string $table_name = "roles";
+    private string $table_name = "role";
 
     private ?Pagination $pagination = null;
 
@@ -29,7 +30,7 @@ class RoleQueryBuilder
     private string $sort_order = "DESC";
 
     // between;
-    private string $with_range_between = false;
+    private bool $with_range_between = false;
     private array $range_betweenable_columns = [RoleConstants::CREATED_AT, RoleConstants::IS_ACTIVATED_UPDATED_AT];
     private string $range_between_column = RoleConstants::CREATED_AT;
     private ?string $from = null;
@@ -45,7 +46,7 @@ class RoleQueryBuilder
         $this->is_count_query = true;
     }
 
-    public function addQueryFilter(string $column, string $truthy_operator = "=", mixed $value, mixed $sql_data_type, string $truthy = "AND")
+    public function addQueryFilter(string $column, mixed $value, mixed $sql_data_type, ?string $truthy_operator = "=", ?string $truthy = "AND")
     {
         if (!in_array($truthy, $this->truthy)) {
             $truthy = "AND";
@@ -62,7 +63,7 @@ class RoleQueryBuilder
         $arg->setTruthy($truthy);
         $arg->setTruthy_operator($truthy_operator);
 
-        $this->query_filters[] = $arg->toKeyValArray();
+        $this->query_filters[] = QueryParameterFactory::toKeyValArray($arg);
     }
 
     public function withRangeBetween(string $range_between_column = RoleConstants::CREATED_AT, ?string $from = null, ?string $to = null)
@@ -120,16 +121,26 @@ class RoleQueryBuilder
             $where_clauses = [];
             foreach ($this->query_filters as $filter) {
                 $where_clauses[] = "{$filter[QueryConstants::COLUMN]} {$filter[QueryConstants::TRUTHY_OPERATOR]} ?";
-                $this->sql_params[] = $filter[QueryConstants::VALUE];
+                $this->sql_params[] = [
+                    QueryConstants::VALUE => $filter[QueryConstants::VALUE],
+                    QueryConstants::SQL_DATA_TYPE => $filter[QueryConstants::SQL_DATA_TYPE],
+                ];
             }
+
             $this->sql .= " WHERE " . implode(" " . $filter[QueryConstants::TRUTHY] . " ", $where_clauses);
         };
 
         if (!$this->is_count_query) {
             if ($this->pagination && $this->with_range_between) {
                 $this->sql .= " AND {$this->range_between_column} BETWEEN ? AND ?";
-                $this->sql_params[] = $this->from;
-                $this->sql_params[] = $this->to;
+                $this->sql_params[] = [
+                    QueryConstants::VALUE => $this->from,
+                    QueryConstants::SQL_DATA_TYPE => \PDO::PARAM_STR,
+                ];
+                $this->sql_params[] = [
+                    QueryConstants::VALUE => $this->to,
+                    QueryConstants::SQL_DATA_TYPE => \PDO::PARAM_STR,
+                ];
             }
 
             if ($this->pagination && $this->with_sort) {
@@ -138,8 +149,14 @@ class RoleQueryBuilder
 
             if ($this->pagination) {
                 $this->sql .= " LIMIT ? OFFSET ?";
-                $this->sql_params[] = $this->pagination->getLimit();
-                $this->sql_params[] = $this->pagination->getOffset();
+                $this->sql_params[] = [
+                    QueryConstants::VALUE => $this->pagination->getLimit(),
+                    QueryConstants::SQL_DATA_TYPE => \PDO::PARAM_INT,
+                ];
+                $this->sql_params[] = [
+                    QueryConstants::VALUE => $this->pagination->getOffset(),
+                    QueryConstants::SQL_DATA_TYPE => \PDO::PARAM_INT,
+                ];
             } else {
                 $this->sql .= " LIMIT 1";
             }

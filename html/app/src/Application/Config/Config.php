@@ -7,12 +7,14 @@ use app\src\Application\Config\PasetoKeyManager;
 class Config
 {
     private App $app;
+    private Databases $databases;
     private PasetoKeyManager $paseto;
 
     public function __construct()
     {
         $this->app = new App();
         $this->paseto = new PasetoKeyManager();
+        $this->databases = new Databases();
     }
 
     public function getApp(): App
@@ -24,4 +26,8 @@ class Config
     {
         return $this->paseto;
     }
+
+	public function getDatabases() : Databases {
+		return $this->databases;
+	}
 }

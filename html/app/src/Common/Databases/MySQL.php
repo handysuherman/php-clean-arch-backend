@@ -6,7 +6,7 @@ use PDO;
 
 class MySQL
 {
-    public static function New(string $host, int $port = 3306, string $db_name, string $username, string $password): PDO
+    public static function New(string $host, string $db_name, string $username, string $password, int $port = 3306,): PDO
     {
         return new PDO("mysql:host=$host:$port;dbname=$db_name", $username, $password);
     }
