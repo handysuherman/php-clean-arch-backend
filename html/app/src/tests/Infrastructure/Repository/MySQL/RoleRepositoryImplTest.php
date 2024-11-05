@@ -3,6 +3,7 @@
 use app\src\Application\Config\Config;
 use app\src\Common\Databases\MySQL;
 use app\src\Common\Helpers\Generation;
+use app\src\Common\Loggers\Logger;
 use app\src\Domain\Entities\QueryParameterEntity;
 use app\src\Domain\Entities\RoleEntity;
 use app\src\Domain\Factories\QueryParameterFactory;
@@ -27,7 +28,7 @@ class RoleRepositoryImplTest extends TestCase
         $this->config = new Config();
 
         $this->connection = MySQL::New($this->config->getDatabases()->getMysql()->getHost(), $this->config->getDatabases()->getMysql()->getDb_name(), $this->config->getDatabases()->getMysql()->getUsername(), $this->config->getDatabases()->getMysql()->getPassword(), $this->config->getDatabases()->getMysql()->getPort());
-        $this->repository = new RoleRepositoryImpl($this->connection);
+        $this->repository = new RoleRepositoryImpl(new Logger("role-repository-test"), $this->connection);
     }
 
 

@@ -4,8 +4,10 @@ namespace app\src\Infrastructure\Repository\MySQL;
 
 use app\src\Common\Constants\QueryConstants;
 use app\src\Common\Exceptions\SQLExceptions\NoRowsException;
+use app\src\Common\Exceptions\SQLExceptions\SQLException;
 use app\src\Common\Exceptions\SQLExceptions\UnprocessableEntity;
 use app\src\Common\Helpers\DatabaseExceptionHandler;
+use app\src\Common\Loggers\Logger;
 use app\src\Domain\Builders\RoleQueryBuilder;
 use app\src\Domain\Builders\UpdateQueryBuilder;
 use app\src\Domain\Entities\RoleEntity;
@@ -15,18 +17,23 @@ use PDO;
 
 class RoleRepositoryImpl implements RoleRepository
 {
-    private PDO $connection;
+    protected PDO $connection;
+    protected Logger $log;
 
+    private string $scope = "RoleRepositoryImpl";
     private string $table_name = "role";
 
-    public function __construct(PDO $connection)
+    public function __construct(Logger $log, PDO $connection)
     {
         $this->connection = $connection;
+        $this->log = $log;
     }
 
     public function save(RoleEntity $arg): void
     {
         try {
+            $context = "$this->scope.save";
+
             $sql = "INSERT INTO $this->table_name (
                 uid,
                 role_name,
@@ -51,13 +58,16 @@ class RoleRepositoryImpl implements RoleRepository
 
             return;
         } catch (\PDOException $e) {
-            DatabaseExceptionHandler::handle($e, "RoleRepository.save");
+            $this->handleLog($context, $e->getMessage(), null, []);
+
+            DatabaseExceptionHandler::handle($e, $context);
         }
     }
 
     public function find(string $cursor, ?array $query_params = null): RoleEntity
     {
         try {
+            $context = "$this->scope.find";
             $query_builder = new RoleQueryBuilder();
 
             if ($query_params) {
@@ -89,15 +99,24 @@ class RoleRepositoryImpl implements RoleRepository
                 return $data;
             }
 
-            throw new NoRowsException("RoleRepository.find.no_rows_exception");
+            $this->handleLog($context, "no rows", $query_builder->getSQL(), $query_builder->getSQLParams());
+
+            throw new NoRowsException("$context.no_rows_exception");
+        } catch (SQLException $e) {
+            $this->handleLog($context, $e->getMessage(), $query_builder->getSQL(), $query_builder->getSQLParams());
+
+            throw $e;
         } catch (\PDOException $e) {
-            DatabaseExceptionHandler::handle($e, "RoleRepository.find");
+            $this->handleLog($context, $e->getMessage(), $query_builder->getSQL(), $query_builder->getSQLParams());
+
+            DatabaseExceptionHandler::handle($e, "$context");
         }
     }
 
     public function update(string $cursor, array $params, ?array $query_params = null): void
     {
         try {
+            $context = "$this->scope.update";
             $query_builder = new UpdateQueryBuilder($this->table_name);
 
             if ($query_params) {
@@ -132,10 +151,31 @@ class RoleRepositoryImpl implements RoleRepository
             $statement->execute();
 
             if ($statement->rowCount() === 0) {
-                throw new NoRowsException("RoleRepository.update.no_rows_updated");
+                $this->handleLog($context, "no rows affected", $query_builder->getSQL(), $query_builder->getSQLParams());
+
+                throw new NoRowsException("$context.no_rows_affected");
             }
+        } catch (SQLException $e) {
+            $this->handleLog($context, $e->getMessage(), $query_builder->getSQL(), $query_builder->getSQLParams());
+
+            throw $e;
         } catch (\PDOException $e) {
-            DatabaseExceptionHandler::handle($e, "RoleRepository.update");
+            $this->handleLog($context, $e->getMessage(), $query_builder->getSQL(), $query_builder->getSQLParams());
+
+            DatabaseExceptionHandler::handle($e, "$context");
+        }
+    }
+
+    private function handleLog(string $context, string $error_message, ?string $sql, array $sql_params)
+    {
+        $this->log->warning("$context", $error_message);
+
+        if ($sql) {
+            $this->log->warning("$context", sprintf("query: %s", $sql));
+        }
+
+        if (!empty($sql_params)) {
+            $this->log->warning("$context", sprintf("query-params: %s", $sql_params));
         }
     }
 }
