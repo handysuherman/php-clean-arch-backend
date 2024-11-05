@@ -15,7 +15,7 @@ use app\src\Domain\Builders\UpdateQueryBuilder;
 use app\src\Domain\Entities\RoleEntity;
 use app\src\Domain\Factories\QueryParameterFactory;
 use app\src\Domain\Factories\RoleFactory;
-use app\src\Domain\Params\ListRoleParams;
+use app\src\Domain\Params\RoleQueryParams;
 use app\src\Infrastructure\Constants\RoleConstants;
 use PDO;
 
@@ -71,9 +71,9 @@ class RoleRepositoryImpl implements RoleRepository
     public function findByUid(string $cursor): RoleEntity
     {
         try {
-            $context = "$this->scope.find";
+            $context = "$this->scope.findByUid";
             $query_builder = new RoleQueryBuilder();
-            $query_builder->addQueryFilter("uid", $cursor, \PDO::PARAM_STR, "=");
+            $query_builder->addQueryFilter(RoleConstants::UID, $cursor, \PDO::PARAM_STR, "=");
             $query_builder->build();
 
             $sql_params = $query_builder->getSQLParams();
@@ -93,9 +93,9 @@ class RoleRepositoryImpl implements RoleRepository
                 return $data;
             }
 
-            $this->handleLog($context, "no rows", $query_builder->getSQL(), $query_builder->getSQLParams());
+            $this->handleLog($context, SQLExceptionMessageConstants::NO_ROWS, $query_builder->getSQL(), $query_builder->getSQLParams());
 
-            throw new NoRowsException("$context.no_rows_exception");
+            throw new NoRowsException(sprintf("%s: %s", $context, SQLExceptionMessageConstants::NO_ROWS));
         } catch (SQLException $e) {
             $this->handleLog($context, $e->getMessage(), $query_builder->getSQL(), $query_builder->getSQLParams());
 
@@ -120,7 +120,7 @@ class RoleRepositoryImpl implements RoleRepository
                     $query_builder->addQueryFilter($param->getColumn(), $param->getValue(), $param->getSql_data_type(), $param->getTruthy_operator(), $param->getTruthy());
                 }
             } else {
-                $query_builder->addQueryFilter("uid", $cursor, \PDO::PARAM_STR, "=");
+                $query_builder->addQueryFilter(RoleConstants::UID, $cursor, \PDO::PARAM_STR, "=");
             }
 
             if (count($params) < 1) {
@@ -160,12 +160,16 @@ class RoleRepositoryImpl implements RoleRepository
         }
     }
 
-    public function list(ListRoleParams $params): array
+    public function list(RoleQueryParams $params, bool $with_search_text = true): array
     {
         try {
             $context = "$this->scope.list";
             $query_builder = new RoleQueryBuilder();
-            $query_builder->withSearchableTextFilters($params->getSearch_text());
+
+            if ($with_search_text) {
+                $query_builder->withSearchableTextFilters($params->getSearch_text());
+            }
+
             $query_builder->withPagination($params->getPagination());
 
 
@@ -207,6 +211,56 @@ class RoleRepositoryImpl implements RoleRepository
             }
 
             return $result;
+        } catch (SQLException $e) {
+            $this->handleLog($context, $e->getMessage(), $query_builder->getSQL(), $query_builder->getSQLParams());
+
+            throw $e;
+        } catch (\PDOException $e) {
+            $this->handleLog($context, $e->getMessage(), $query_builder->getSQL(), $query_builder->getSQLParams());
+
+            DatabaseExceptionHandler::handle($e, "$context");
+        }
+    }
+
+    public function count(RoleQueryParams $params, bool $with_search_text = true): int
+    {
+        try {
+            $context = "$this->scope.count";
+            $query_builder = new RoleQueryBuilder();
+            $query_builder->isCount();
+
+            if ($with_search_text) {
+                $query_builder->withSearchableTextFilters($params->getSearch_text());
+            }
+
+            if ($params->getQuery_params()) {
+                foreach ($params->getQuery_params() as $query_param) {
+                    $param = QueryParameterFactory::fromArr($query_param);
+
+                    $query_builder->addQueryFilter($param->getColumn(), $param->getValue(), $param->getSql_data_type(), $param->getTruthy_operator(), $param->getTruthy());
+                }
+            }
+
+            if ($params->getWith_range()) {
+                $query_builder->withRangeBetween($params->getRange_property(), $params->getFrom(), $params->getTo());
+            }
+
+            $query_builder->build();
+
+            $sql_params = $query_builder->getSQLParams();
+
+            $statement = $this->connection->prepare($query_builder->getSQL());
+            foreach ($sql_params as $index => $param) {
+                $param = QueryParameterFactory::fromArr($param);
+
+                $statement->bindValue($index + 1, $param->getValue(), $param->getSql_data_type());
+            }
+
+            $statement->execute();
+
+            $count = $statement->fetchColumn();
+
+            return $count !== false ? (int)$count : 0;
         } catch (SQLException $e) {
             $this->handleLog($context, $e->getMessage(), $query_builder->getSQL(), $query_builder->getSQLParams());
 

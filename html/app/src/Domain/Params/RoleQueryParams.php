@@ -4,7 +4,7 @@ namespace app\src\Domain\Params;
 
 use app\src\Common\Helpers\Pagination;
 
-class ListRoleParams
+class RoleQueryParams
 {
     private Pagination $pagination;
     private string $wildcard = "%";

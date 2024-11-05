@@ -9,7 +9,7 @@ use app\src\Domain\Entities\QueryParameterEntity;
 use app\src\Domain\Entities\RoleEntity;
 use app\src\Domain\Factories\QueryParameterFactory;
 use app\src\Domain\Factories\RoleFactory;
-use app\src\Domain\Params\ListRoleParams;
+use app\src\Domain\Params\RoleQueryParams;
 use app\src\Infrastructure\Constants\RoleConstants;
 use app\src\Infrastructure\Repository\MySQL\RoleRepository;
 use app\src\Infrastructure\Repository\MySQL\RoleRepositoryImpl;
@@ -133,7 +133,7 @@ class RoleRepositoryImplTest extends TestCase
     public function testList()
     {
         $arg = $this->createRandom();
-        $list_params = new ListRoleParams();
+        $list_params = new RoleQueryParams();
         $list_params->setPagination(new Pagination());
         $list_params->setSearch_text($arg->getRole_name());
 
@@ -151,6 +151,30 @@ class RoleRepositoryImplTest extends TestCase
         $list_params->setQuery_params($filters);
 
         $response = $this->repository->list($list_params);
+        $this->assertNotEmpty($response);
+    }
+
+    public function testCount()
+    {
+        $arg = $this->createRandom();
+        $list_params = new RoleQueryParams();
+        $list_params->setPagination(new Pagination());
+        $list_params->setSearch_text($arg->getRole_name());
+
+        $is_activated_flag = new QueryParameterEntity();
+        $is_activated_flag->setColumn(RoleConstants::IS_ACTIVATED);
+        $is_activated_flag->setValue($arg->getIs_activated());
+        $is_activated_flag->setSql_data_type(\PDO::PARAM_BOOL);
+        $is_activated_flag->setTruthy("AND");
+        $is_activated_flag->setTruthy_operator("=");
+
+        $filters = [];
+
+        $filters[] = QueryParameterFactory::toKeyValArray($is_activated_flag);
+
+        $list_params->setQuery_params($filters);
+
+        $response = $this->repository->count($list_params);
         $this->assertNotEmpty($response);
     }
 

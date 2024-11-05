@@ -22,16 +22,19 @@ class RoleQueryBuilder
 
     private array $query_filters = [];
 
+    // query availability properties
+    private array $sortable_columns = [RoleConstants::CREATED_AT, RoleConstants::ROLE_NAME];
+    private array $range_betweenable_columns = [RoleConstants::CREATED_AT, RoleConstants::IS_ACTIVATED_UPDATED_AT];
+    private array $additional_query_columns = [RoleConstants::IS_ACTIVATED];
+
     // sort
     private bool $with_sort = true;
-    private array $sortable_columns = [RoleConstants::CREATED_AT, RoleConstants::ROLE_NAME];
     private string $sort_by = RoleConstants::CREATED_AT;
     private array $sort_orders = ["ASC", "DESC"];
     private string $sort_order = "DESC";
 
     // between;
     private bool $with_range_between = false;
-    private array $range_betweenable_columns = [RoleConstants::CREATED_AT, RoleConstants::IS_ACTIVATED_UPDATED_AT];
     private string $range_between_column = RoleConstants::CREATED_AT;
     private ?string $from = null;
     private ?string $to = null;
@@ -156,19 +159,19 @@ class RoleQueryBuilder
             }
         };
 
-        if (!$this->is_count_query) {
-            if ($this->pagination && $this->with_range_between) {
-                $this->sql .= " AND {$this->range_between_column} BETWEEN ? AND ?";
-                $this->sql_params[] = [
-                    QueryConstants::VALUE => $this->from,
-                    QueryConstants::SQL_DATA_TYPE => \PDO::PARAM_STR,
-                ];
-                $this->sql_params[] = [
-                    QueryConstants::VALUE => $this->to,
-                    QueryConstants::SQL_DATA_TYPE => \PDO::PARAM_STR,
-                ];
-            }
+        if ($this->with_range_between) {
+            $this->sql .= " AND {$this->range_between_column} BETWEEN ? AND ?";
+            $this->sql_params[] = [
+                QueryConstants::VALUE => $this->from,
+                QueryConstants::SQL_DATA_TYPE => \PDO::PARAM_STR,
+            ];
+            $this->sql_params[] = [
+                QueryConstants::VALUE => $this->to,
+                QueryConstants::SQL_DATA_TYPE => \PDO::PARAM_STR,
+            ];
+        }
 
+        if (!$this->is_count_query) {
             if ($this->pagination && $this->with_sort) {
                 $this->sql .= " ORDER BY {$this->sort_by} {$this->sort_order}";
             }
@@ -197,5 +200,20 @@ class RoleQueryBuilder
     public function getSQLParams(): array
     {
         return $this->sql_params;
+    }
+
+    public function getSortable_columns(): array
+    {
+        return $this->sortable_columns;
+    }
+
+    public function getRange_betweenable_columns(): array
+    {
+        return $this->range_betweenable_columns;
+    }
+
+    public function getAdditional_query_columns(): array
+    {
+        return $this->additional_query_columns;
     }
 }
