@@ -54,7 +54,7 @@ class Token
         return $token->toString();
     }
 
-    public function verify(string $token, TokenType $expected_type, string $expected_platform_key, bool $with_roles_checks = false, array $allowed_roles = []): ?ClaimerDTO
+    public function verify(string $token, TokenType $expected_type, string $expected_platform_key, bool $with_roles_checks = false, array $allowed_roles = []): ClaimerDTO
     {
 
         $parser = Parser::getPublic($this->public_key, ProtocolCollection::v4())

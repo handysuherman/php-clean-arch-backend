@@ -12,6 +12,9 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+        'requestContext' => [
+            'class' => 'app\components\RequestContext',
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'oqdWn6aT_icKRWyxYjOSZ1oM0n9g8mBn',

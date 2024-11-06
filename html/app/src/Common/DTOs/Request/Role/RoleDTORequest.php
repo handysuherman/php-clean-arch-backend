@@ -1,6 +1,6 @@
 <?php
 
-namespace app\src\Common\DTOs\Request;
+namespace app\src\Common\DTOs\Request\Role;
 
 use app\src\Common\Exceptions\ValidationExceptions\DTOLengthLimitExceeded;
 

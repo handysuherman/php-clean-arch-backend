@@ -2,8 +2,6 @@
 
 namespace app\src\Domain\Entities;
 
-use app\src\Common\Constants\QueryConstants;
-
 class QueryParameterEntity
 {
 	private ?string $column;

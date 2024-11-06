@@ -3,7 +3,9 @@
 namespace  app\src\Application\Middlewares;
 
 use app\src\Application\Config\Config;
+use app\src\Common\Constants\Exceptions\PlatformPermissionMiddlewareExceptionMessageConstants;
 use app\src\Common\Exceptions\PlatformPermissionMiddlewareExceptions\InvalidPlatformException;
+use app\src\Common\Loggers\Logger;
 
 class PlatformPermissionMiddleware
 {
@@ -17,11 +19,11 @@ class PlatformPermissionMiddleware
     public function Validate(string|null|array $requested_platform_key)
     {
         if (empty($requested_platform_key)) {
-            throw new InvalidPlatformException("invalid platform key");
+            throw new InvalidPlatformException(PlatformPermissionMiddlewareExceptionMessageConstants::ERR_INVALID_PLATFORM_KEY);
         }
 
         if (!$this->IsValidPlatform($requested_platform_key)) {
-            throw new InvalidPlatformException("invalid platform key");
+            throw new InvalidPlatformException(PlatformPermissionMiddlewareExceptionMessageConstants::ERR_INVALID_PLATFORM_KEY);
         }
     }
 

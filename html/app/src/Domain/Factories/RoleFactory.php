@@ -2,7 +2,7 @@
 
 namespace app\src\Domain\Factories;
 
-use app\src\Common\DTOs\Request\RoleDTORequest;
+use app\src\Common\DTOs\Request\Role\RoleDTORequest;
 use app\src\Common\DTOs\Response\RoleDTOResponse;
 use app\src\Common\Helpers\Generation;
 use app\src\Common\Helpers\Identifier;
