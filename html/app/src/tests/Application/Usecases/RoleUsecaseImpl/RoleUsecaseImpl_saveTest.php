@@ -17,6 +17,7 @@ use app\src\Domain\Factories\RoleFactory;
 use app\src\Infrastructure\Repository\MySQL\RoleRepository;
 use app\src\tests\BaseTest;
 use PHPUnit\Framework\MockObject\MockObject;
+use Ulid\Ulid;
 
 class RoleUsecaseImpl_saveTest extends BaseTest
 {
@@ -84,14 +85,29 @@ class RoleUsecaseImpl_saveTest extends BaseTest
         }
 
         try {
+            Ulid::fromString($entity->getUid());
+        } catch (InvalidArgumentException $e) {
+            $this->error_message .= "uid: " . $e->getMessage();
+        }
+
+        try {
             Time::revertAtomicMicroFormatToDateTime($entity->getCreated_at());
         } catch (\Exception $e) {
             $this->error_message .= sprintf("expected created_at should be %s, got %s", parent::EXAMPLE_DATE_FORMAT, $entity->getCreated_at());
         }
 
-
         if (empty($entity->getCreated_by())) {
             $this->error_message .= "created_by should not be empty";
+        }
+
+        if ($ctx->getAuth_user()) {
+            if ($entity->getCreated_by() !== $ctx->getAuth_user()->getUser_id()) {
+                $this->error_message .= sprintf("expected created_by should be %s, got %s", $ctx->getAuth_user()->getUser_id(), $entity->getCreated_by());
+            }
+        } else {
+            if ($entity->getCreated_by() !== "system") {
+                $this->error_message .= sprintf("expected created_by should be system, got %s", $entity->getCreated_by());
+            }
         }
 
         if (!empty($this->error_message)) {

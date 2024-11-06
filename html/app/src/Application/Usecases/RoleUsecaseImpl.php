@@ -7,6 +7,7 @@ use app\src\Application\Contexts\RequestContext;
 use app\src\Common\DTOs\Request\Role\CreateRoleDTORequest;
 use app\src\Common\DTOs\Request\Role\RoleDTORequest;
 use app\src\Common\DTOs\Response\RoleDTOResponse;
+use app\src\Common\Helpers\Generation;
 use app\src\Common\Helpers\Identifier;
 use app\src\Common\Helpers\Text;
 use app\src\Common\Helpers\Time;
