@@ -1,0 +1,198 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Bridge API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://your-api-url.com/api/v1"
+        }
+    ],
+    "paths": {
+        "/api/v1": {},
+        "/api/v1/roles/{id}": {
+            "get": {
+                "tags": [
+                    "Roles"
+                ],
+                "operationId": "47f2984692570ac33513a01d4d80aca2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RoleSuccessApiResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "no rows found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "ApiKey": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Role": {
+                "properties": {
+                    "uid": {
+                        "type": "string",
+                        "example": "01JC083YJ6K9D91BW4WQQBWWZH",
+                        "nullable": false
+                    },
+                    "role_name": {
+                        "type": "string",
+                        "example": "mock string",
+                        "nullable": false
+                    },
+                    "role_name_slug": {
+                        "type": "string",
+                        "example": "mock-string",
+                        "nullable": false
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "mock description",
+                        "nullable": false
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "example": "2024-11-06T08:05:38.486431+00:00",
+                        "nullable": false
+                    },
+                    "created_by": {
+                        "type": "string",
+                        "example": "01JC083YJ6K9D91BW4WQQBWWZH",
+                        "nullable": false
+                    },
+                    "is_activated": {
+                        "type": "boolean",
+                        "example": true,
+                        "nullable": false
+                    },
+                    "is_activated_updated_at": {
+                        "type": "string",
+                        "example": "2024-11-06T08:05:38.486431+00:00",
+                        "nullable": false
+                    },
+                    "is_activated_updated_by": {
+                        "type": "string",
+                        "example": "01JC083YJ6K9D91BW4WQQBWWZH",
+                        "nullable": false
+                    }
+                },
+                "type": "object"
+            },
+            "RoleSuccessApiResponse": {
+                "properties": {
+                    "status": {
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "type": "integer"
+                    },
+                    "data": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/Role"
+                            }
+                        ],
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "SuccessResponse": {
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "example": 200
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "OK"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "example": "2024-11-06T08:05:38.486431+00:00"
+                    },
+                    "data": {
+                        "type": "object",
+                        "example": null,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ErrorResponse": {
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "example": 404
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "any error message goes here"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "example": "2024-11-06T08:05:38.486431+00:00"
+                    },
+                    "data": {
+                        "type": "object",
+                        "example": null,
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "ApiKey": {
+                "type": "apiKey",
+                "name": "x-api-key",
+                "in": "header"
+            },
+            "Token": {
+                "type": "apiKey",
+                "name": "x-token",
+                "in": "header"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Roles",
+            "description": "Roles"
+        }
+    ]
+}

@@ -13,6 +13,14 @@ use Yii;
 use yii\rest\Controller;
 use yii\web\Response;
 
+/**
+ * @OA\Info(title="Bridge API", version="1.0.0")
+ * @OA\Server(url="http://your-api-url.com/api/v1")
+ * @OA\PathItem(path="/api/v1")
+ * @OA\SecurityRequirement(
+ *     securitySchemes={"ApiKey", "Token"}
+ * )
+ */
 class ApiController extends Controller
 {
     protected Config $cfg;

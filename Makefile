@@ -1,3 +1,11 @@
+.PHONY: swagger-v1
+swagger-v1:
+	./vendor/bin/openapi --output api-docs.json ./controllers/api/v1
+
+.PHONY: bswagger-v1
+bswagger-v1:
+	./vendor/bin/openapi -b ./vendor/autoload.php ./controllers/api/v1
+
 .PHONY: test-src
 test-src:
 	vendor/bin/phpunit --testdox src/tests

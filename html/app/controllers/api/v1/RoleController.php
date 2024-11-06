@@ -8,6 +8,7 @@ use app\src\Common\Loggers\Logger;
 use app\src\Domain\Factories\RoleFactory;
 use Exception;
 use InvalidArgumentException;
+use Yii;
 
 class RoleController extends ApiController
 {
@@ -20,6 +21,29 @@ class RoleController extends ApiController
         parent::__construct($id, $module, $log, $cfg, $config);
     }
 
+    public function actionCreate()
+    {
+        $data = Yii::$app->request->getBodyParams();
+        var_dump($data);
+        die();
+        return $this->formatSuccessResponse(200, sprintf("this is role_name %s", $data['role_name']));
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/roles/{id}",
+     *     tags={"Roles"},
+     *     security={{"ApiKey":{}}},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="string")),
+     *     @OA\Response(response="200", description="OK",
+     *     @OA\JsonContent(ref="#/components/schemas/RoleSuccessApiResponse")),
+     *     @OA\Response(response="404", description="no rows found",
+     *     @OA\JsonContent(ref="#/components/schemas/ErrorResponse"))
+     *     )
+     * 
+     * @return Response
+     * @throws Exception
+     */
     public function actionView($id)
     {
         try {
