@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="vendor/autoload.php">
+    <!-- Define test suite -->
+    <testsuite name="Buisness Logic Test suites">
+        <!-- Include all test files in the tests directory that end with 'Test.php' -->
+        <directory suffix="Test.php">./src/tests</directory>
+    </testsuite>
+    <groups>
+        <exclude>
+            <group>concreteGroup</group>
+        </exclude>
+    </groups>
+</phpunit>
