@@ -32,17 +32,23 @@ use OpenApi\Annotations as OA;
  *             @OA\Property(property="uid", type="string", nullable=false, example="01JC083YJ6K9D91BW4WQQBWWZH"),
  *             @OA\Property(property="role_name", type="string", nullable=false, example="mock string"),
  *             @OA\Property(property="role_name_slug", type="string", nullable=false, example="mock-string"),
- *             @OA\Property(property="description", type="string", nullable=false, example="mock description"),
+ *             @OA\Property(property="description", type="string", nullable=false, example="mock description", default=""),
  *             @OA\Property(property="created_at", type="string", nullable=false, example="2024-11-06T08:05:38.486431+00:00"),
- *             @OA\Property(property="created_by", type="string", nullable=false, example="01JC083YJ6K9D91BW4WQQBWWZH"),
- *             @OA\Property(property="is_activated", type="boolean", nullable=false, example=true),
- *             @OA\Property(property="is_activated_updated_at", type="string", nullable=false, example="2024-11-06T08:05:38.486431+00:00"),
- *             @OA\Property(property="is_activated_updated_by", type="string", nullable=false, example="01JC083YJ6K9D91BW4WQQBWWZH")
+ *             @OA\Property(property="created_by", type="string", nullable=false, example="01JC083YJ6K9D91BW4WQQBWWZH", default="system"),
+ *             @OA\Property(property="is_activated", type="boolean", nullable=false, example=true, default=true),
+ *             @OA\Property(property="is_activated_updated_at", type="string", nullable=false, example="2024-11-06T08:05:38.486431+00:00", default="0000-00-00T00:00:00.000000+00:00"),
+ *             @OA\Property(property="is_activated_updated_by", type="string", nullable=false, example="01JC083YJ6K9D91BW4WQQBWWZH", default="system")
  *         ),
  *         @OA\Schema(
  *             schema="CreateRoleParams",
  *             @OA\Property(property="role_name", type="string", nullable=false, example="mock string", minLength=5, maxLength=100),
  *             @OA\Property(property="description", type="string", nullable=true, example="mock description", minLength=1, maxLength=300, default=null)
+ *         ),
+ *         @OA\Schema(
+ *             schema="UpdateRoleParams",
+ *             @OA\Property(property="role_name", type="string", nullable=true, example="mock string", minLength=5, maxLength=100, default=null),
+ *             @OA\Property(property="description", type="string", nullable=true, example="mock description", minLength=1, maxLength=300, default=null),
+ *             @OA\Property(property="is_activated", type="boolean", nullable=true, example="mock description", minLength=1, maxLength=300, default=null),
  *         ),
  *         @OA\Schema(
  *             schema="UidSuccessApiResponse",

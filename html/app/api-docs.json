@@ -133,6 +133,7 @@
                     },
                     "description": {
                         "type": "string",
+                        "default": "",
                         "example": "mock description",
                         "nullable": false
                     },
@@ -143,21 +144,25 @@
                     },
                     "created_by": {
                         "type": "string",
+                        "default": "system",
                         "example": "01JC083YJ6K9D91BW4WQQBWWZH",
                         "nullable": false
                     },
                     "is_activated": {
                         "type": "boolean",
+                        "default": true,
                         "example": true,
                         "nullable": false
                     },
                     "is_activated_updated_at": {
                         "type": "string",
+                        "default": "0000-00-00T00:00:00.000000+00:00",
                         "example": "2024-11-06T08:05:38.486431+00:00",
                         "nullable": false
                     },
                     "is_activated_updated_by": {
                         "type": "string",
+                        "default": "system",
                         "example": "01JC083YJ6K9D91BW4WQQBWWZH",
                         "nullable": false
                     }
@@ -168,11 +173,45 @@
                 "properties": {
                     "role_name": {
                         "type": "string",
+                        "maxLength": 100,
+                        "minLength": 5,
                         "example": "mock string",
                         "nullable": false
                     },
                     "description": {
                         "type": "string",
+                        "default": null,
+                        "maxLength": 300,
+                        "minLength": 1,
+                        "example": "mock description",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateRoleParams": {
+                "properties": {
+                    "role_name": {
+                        "type": "string",
+                        "default": null,
+                        "maxLength": 100,
+                        "minLength": 5,
+                        "example": "mock string",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "default": null,
+                        "maxLength": 300,
+                        "minLength": 1,
+                        "example": "mock description",
+                        "nullable": true
+                    },
+                    "is_activated": {
+                        "type": "boolean",
+                        "default": null,
+                        "maxLength": 300,
+                        "minLength": 1,
                         "example": "mock description",
                         "nullable": true
                     }
