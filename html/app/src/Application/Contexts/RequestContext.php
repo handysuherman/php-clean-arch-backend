@@ -1,6 +1,6 @@
 <?php
 
-namespace app\src\Application\Context;
+namespace app\src\Application\Contexts;
 
 use app\src\Common\DTOs\ClaimerDTO;
 
