@@ -5,6 +5,8 @@ namespace app\src\Common\Constants;
 
 class HttpResponseConstants
 {
+    const ID = "id";
+    const UID = "uid";
     const STATUS = "status";
     const DATA = "data";
     const MESSAGE = "message";

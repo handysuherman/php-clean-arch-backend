@@ -9,7 +9,7 @@ class RequestContext
     private string $platform_key;
     private string $user_ip;
     private string $user_agent;
-    private ?ClaimerDTO $auth_user;
+    private ?ClaimerDTO $auth_user = null;
 
     public function getPlatform_key(): string
     {

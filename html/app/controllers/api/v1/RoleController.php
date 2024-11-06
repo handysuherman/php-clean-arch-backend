@@ -4,10 +4,12 @@ namespace app\controllers\api\v1;
 
 use app\src\Application\Config\Config;
 use app\src\Application\Usecases\RoleUsecase;
+use app\src\Common\Constants\HttpResponseConstants;
+use app\src\Common\DTOs\Request\Role\CreateRoleDTORequest;
 use app\src\Common\Loggers\Logger;
 use app\src\Domain\Factories\RoleFactory;
+use app\src\Infrastructure\Constants\RoleConstants;
 use Exception;
-use InvalidArgumentException;
 use Yii;
 
 class RoleController extends ApiController
@@ -21,18 +23,45 @@ class RoleController extends ApiController
         parent::__construct($id, $module, $log, $cfg, $config);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/roles",
+     *     tags={"Role"},
+     *      security={{"ApiKey":{}}},
+     *     @OA\RequestBody(
+     *         required=true, 
+     *         @OA\JsonContent(ref="#/components/schemas/CreateRoleParams")
+     *     ),
+     *     @OA\Response(response="200", description="create",
+     *          @OA\JsonContent(ref="#/components/schemas/UidSuccessApiResponse")),
+     *     @OA\Response(response="400", description="Invalid input",
+     *          @OA\JsonContent(ref="#/components/schemas/ErrorResponse")),
+     *     )
+     * 
+     * @return Response
+     * @throws Exception
+     */
     public function actionCreate()
     {
-        $data = Yii::$app->request->getBodyParams();
-        var_dump($data);
-        die();
-        return $this->formatSuccessResponse(200, sprintf("this is role_name %s", $data['role_name']));
+        try {
+            $data = Yii::$app->request->getBodyParams();
+
+            $arg = new CreateRoleDTORequest();
+            $arg->setRole_name($data[RoleConstants::ROLE_NAME]);
+            $arg->setDescription(isset($data[RoleConstants::DESCRIPTION]) ? $data[RoleConstants::DESCRIPTION] : '');
+
+            $response_uid = $this->usecase->save($this->request_context->getContext(), $arg);
+
+            return parent::formatSuccessResponse(200, [HttpResponseConstants::UID => $response_uid]);
+        } catch (Exception $e) {
+            return parent::formatErrorResponse($e->getMessage());
+        }
     }
 
     /**
      * @OA\Get(
      *     path="/roles/{id}",
-     *     tags={"Roles"},
+     *     tags={"Role"},
      *     security={{"ApiKey":{}}},
      *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="string")),
      *     @OA\Response(response="200", description="OK",
