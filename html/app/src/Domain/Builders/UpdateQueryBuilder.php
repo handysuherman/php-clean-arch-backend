@@ -101,7 +101,7 @@ class UpdateQueryBuilder
     }
 
 
-    public function getSQL(): string
+    public function getSQL(): ?string
     {
         return $this->sql;
     }

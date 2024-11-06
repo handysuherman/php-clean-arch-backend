@@ -9,6 +9,8 @@ use app\src\Infrastructure\Repository\MySQL\RoleRepository;
 use app\src\tests\BaseTest;
 use PHPUnit\Framework\MockObject\MockObject;
 use app\src\Application\Contexts\RequestContext;
+use app\src\Common\Helpers\Text;
+use app\src\Domain\Factories\QueryParameterFactory;
 use app\src\Infrastructure\Constants\RoleConstants;
 use Ulid\Ulid;
 
@@ -89,12 +91,24 @@ class RoleUsecaseImpl_UpdateTest extends BaseTest
                 $this->error_message .= sprintf("role_name_slug should be updated if role name was not null\n");
             }
 
+            if ($actual_arg->getRole_name_slug() !== Text::toSlugify($actual_arg->getRole_name(), true)) {
+                $this->error_message .= sprintf("expected role_name_slug %s, got %s", Text::toSlugify($actual_arg->getRole_name(), true), $actual_arg->getRole_name_slug());
+            }
+
             if (!isset($params[RoleConstants::ROLE_NAME])) {
                 $this->error_message .= sprintf("role_name not being set in array params\n");
             }
 
+            if (QueryParameterFactory::fromArr($params[RoleConstants::ROLE_NAME])->getValue() !== $actual_arg->getRole_name()) {
+                $this->error_message .= sprintf("expected role_name %s, got %s", $actual_arg->getRole_name(), QueryParameterFactory::fromArr($params[RoleConstants::ROLE_NAME])->getValue());
+            }
+
             if (!isset($params[RoleConstants::ROLE_NAME_SLUG])) {
                 $this->error_message .= sprintf("role_name_slug not being set in array params\n");
+            }
+
+            if (QueryParameterFactory::fromArr($params[RoleConstants::ROLE_NAME_SLUG])->getValue() !== $actual_arg->getRole_name_slug()) {
+                $this->error_message .= sprintf("expected role_name_slug %s, got %s", $actual_arg->getRole_name_slug(), QueryParameterFactory::fromArr($params[RoleConstants::ROLE_NAME_SLUG])->getValue());
             }
         }
 
@@ -102,11 +116,19 @@ class RoleUsecaseImpl_UpdateTest extends BaseTest
             if (!isset($params[RoleConstants::DESCRIPTION])) {
                 $this->error_message .= sprintf("description not being set in array params\n");
             }
+
+            if (QueryParameterFactory::fromArr($params[RoleConstants::DESCRIPTION])->getValue() !== $actual_arg->getDescription()) {
+                $this->error_message .= sprintf("expected description %s, got %s", $actual_arg->getDescription(), QueryParameterFactory::fromArr($params[RoleConstants::DESCRIPTION])->getValue());
+            }
         }
 
         if (!is_null($actual_arg->getIs_activated())) {
             if (!isset($params[RoleConstants::IS_ACTIVATED])) {
                 $this->error_message .= sprintf("is_activated not being set in array params\n");
+            }
+
+            if (QueryParameterFactory::fromArr($params[RoleConstants::IS_ACTIVATED])->getValue() !== $actual_arg->getIs_activated()) {
+                $this->error_message .= sprintf("expected is_activated %s, got %s", $actual_arg->getIs_activated(), QueryParameterFactory::fromArr($params[RoleConstants::IS_ACTIVATED])->getValue());
             }
 
             if (!$actual_arg->getIs_activated_updated_at()) {
@@ -121,8 +143,16 @@ class RoleUsecaseImpl_UpdateTest extends BaseTest
                 $this->error_message .= sprintf("is_activated_updated_at not being set in array params\n");
             }
 
+            if (QueryParameterFactory::fromArr($params[RoleConstants::IS_ACTIVATED_UPDATED_AT])->getValue() !== $actual_arg->getIs_activated_updated_at()) {
+                $this->error_message .= sprintf("expected is_activated_updated_at %s, got %s", $actual_arg->getIs_activated_updated_at(), QueryParameterFactory::fromArr($params[RoleConstants::IS_ACTIVATED_UPDATED_AT])->getValue());
+            }
+
             if (!isset($params[RoleConstants::IS_ACTIVATED_UPDATED_BY])) {
                 $this->error_message .= sprintf("is_activated_updated_by not being set in array params\n");
+            }
+
+            if (QueryParameterFactory::fromArr($params[RoleConstants::IS_ACTIVATED_UPDATED_BY])->getValue() !== $actual_arg->getIs_activated_updated_by()) {
+                $this->error_message .= sprintf("expected is_activated_updated_by %s, got %s", $actual_arg->getIs_activated_updated_by(), QueryParameterFactory::fromArr($params[RoleConstants::IS_ACTIVATED_UPDATED_BY])->getValue());
             }
 
 

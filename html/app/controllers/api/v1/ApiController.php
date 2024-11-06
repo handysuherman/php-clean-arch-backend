@@ -48,6 +48,13 @@ class ApiController extends Controller
         return $behaviors;
     }
 
+    public function formatUidArr(string $uid): array
+    {
+        return [
+            HttpResponseConstants::UID => $uid
+        ];
+    }
+
     public function formatSuccessResponse($status, $data = null, $message = null)
     {
         $response = Http::SuccessResponse($status, $data, $message);

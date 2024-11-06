@@ -15,6 +15,7 @@ use app\src\Common\Helpers\Text;
 use app\src\Common\Helpers\Time;
 use app\src\Common\Loggers\Logger;
 use app\src\Domain\Entities\RoleEntity;
+use app\src\Domain\Factories\QueryParameterFactory;
 use app\src\Domain\Factories\RoleFactory;
 use app\src\Infrastructure\Repository\MySQL\RoleRepository;
 use Ulid\Exception\InvalidUlidStringException;

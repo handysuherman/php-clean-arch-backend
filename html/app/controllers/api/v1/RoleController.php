@@ -4,8 +4,11 @@ namespace app\controllers\api\v1;
 
 use app\src\Application\Config\Config;
 use app\src\Application\Usecases\RoleUsecase;
+use app\src\Common\Constants\Exceptions\SQLExceptionMessageConstants;
 use app\src\Common\Constants\HttpResponseConstants;
 use app\src\Common\DTOs\Request\Role\CreateRoleDTORequest;
+use app\src\Common\DTOs\Request\Role\UpdateRoleDTORequest;
+use app\src\Common\Exceptions\SQLExceptions\NoRowsException;
 use app\src\Common\Loggers\Logger;
 use app\src\Domain\Factories\RoleFactory;
 use app\src\Infrastructure\Constants\RoleConstants;
@@ -52,7 +55,7 @@ class RoleController extends ApiController
 
             $response_uid = $this->usecase->save($this->request_context->getContext(), $arg);
 
-            return parent::formatSuccessResponse(200, [HttpResponseConstants::UID => $response_uid]);
+            return parent::formatSuccessResponse(200, parent::formatUidArr($response_uid));
         } catch (Exception $e) {
             return parent::formatErrorResponse($e->getMessage());
         }
@@ -79,6 +82,31 @@ class RoleController extends ApiController
             $response = $this->usecase->getByUid($this->request_context->getContext(), $id);
 
             return parent::formatSuccessResponse(200, RoleFactory::toKeyValArray($response), "OK");
+        } catch (Exception $e) {
+            return parent::formatErrorResponse($e->getMessage());
+        }
+    }
+
+    public function actionUpdate($id)
+    {
+        try {
+            $data = Yii::$app->request->getBodyParams();
+
+            $arg = new UpdateRoleDTORequest();
+            $arg->setUid($id);
+            $arg->setRole_name($data[RoleConstants::ROLE_NAME]);
+            $arg->setDescription($data[RoleConstants::DESCRIPTION]);
+            $arg->setIs_activated($data[RoleConstants::IS_ACTIVATED]);
+
+            $response_uid = $this->usecase->update($this->request_context->getContext(), $arg);
+
+            return parent::formatSuccessResponse(200, parent::formatUidArr($response_uid));
+        } catch (NoRowsException $e) {
+            if (strpos(strtolower($e->getMessage()), SQLExceptionMessageConstants::NO_ROWS_AFFECTED) !== false) {
+                return parent::formatSuccessResponse(200, parent::formatUidArr($id), SQLExceptionMessageConstants::NO_ROWS_AFFECTED);
+            }
+
+            return parent::formatErrorResponse($e->getMessage());
         } catch (Exception $e) {
             return parent::formatErrorResponse($e->getMessage());
         }

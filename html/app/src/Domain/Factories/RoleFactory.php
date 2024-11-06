@@ -8,6 +8,7 @@ use app\src\Common\Helpers\Generation;
 use app\src\Common\Helpers\Identifier;
 use app\src\Common\Helpers\Text;
 use app\src\Common\Helpers\Time;
+use app\src\Domain\Entities\QueryParameterEntity;
 use app\src\Domain\Entities\RoleEntity;
 use app\src\Infrastructure\Constants\RoleConstants;
 
@@ -63,27 +64,57 @@ class RoleFactory
         $update_array = [];
 
         if ($arg->getRole_name() && !in_array(RoleConstants::ROLE_NAME, $exclude)) {
-            $update_array[RoleConstants::ROLE_NAME] = $arg->getRole_name();
+            $arr = new QueryParameterEntity();
+            $arr->setColumn(RoleConstants::ROLE_NAME);
+            $arr->setValue($arg->getRole_name());
+            $arr->setSql_data_type(\PDO::PARAM_STR);
+
+            $update_array[RoleConstants::ROLE_NAME] = QueryParameterFactory::toKeyValArray($arr);
         }
 
         if ($arg->getDescription() && !in_array(RoleConstants::DESCRIPTION, $exclude)) {
-            $update_array[RoleConstants::DESCRIPTION] = $arg->getDescription();
+            $arr = new QueryParameterEntity();
+            $arr->setColumn(RoleConstants::DESCRIPTION);
+            $arr->setValue($arg->getDescription());
+            $arr->setSql_data_type(\PDO::PARAM_STR);
+
+            $update_array[RoleConstants::DESCRIPTION] = QueryParameterFactory::toKeyValArray($arr);
         }
 
         if ($arg->getRole_name_slug() && !in_array(RoleConstants::ROLE_NAME_SLUG, $exclude)) {
-            $update_array[RoleConstants::ROLE_NAME_SLUG] = $arg->getRole_name_slug();
+            $arr = new QueryParameterEntity();
+            $arr->setColumn(RoleConstants::ROLE_NAME_SLUG);
+            $arr->setValue($arg->getRole_name_slug());
+            $arr->setSql_data_type(\PDO::PARAM_STR);
+
+            $update_array[RoleConstants::ROLE_NAME_SLUG] = QueryParameterFactory::toKeyValArray($arr);
         }
 
         if ($arg->getIs_activated() && !in_array(RoleConstants::IS_ACTIVATED, $exclude)) {
-            $update_array[RoleConstants::IS_ACTIVATED] = $arg->getIs_activated();
+            $arr = new QueryParameterEntity();
+            $arr->setColumn(RoleConstants::IS_ACTIVATED);
+            $arr->setValue($arg->getIs_activated());
+            $arr->setSql_data_type(\PDO::PARAM_BOOL);
+
+            $update_array[RoleConstants::IS_ACTIVATED] = QueryParameterFactory::toKeyValArray($arr);
         }
 
         if ($arg->getIs_activated_updated_at() && !in_array(RoleConstants::IS_ACTIVATED_UPDATED_AT, $exclude)) {
-            $update_array[RoleConstants::IS_ACTIVATED_UPDATED_AT] = $arg->getIs_activated_updated_at();
+            $arr = new QueryParameterEntity();
+            $arr->setColumn(RoleConstants::IS_ACTIVATED_UPDATED_AT);
+            $arr->setValue($arg->getIs_activated_updated_at());
+            $arr->setSql_data_type(\PDO::PARAM_STR);
+
+            $update_array[RoleConstants::IS_ACTIVATED_UPDATED_AT] = QueryParameterFactory::toKeyValArray($arr);
         }
 
         if ($arg->getIs_activated_updated_by() && !in_array(RoleConstants::IS_ACTIVATED_UPDATED_BY, $exclude)) {
-            $update_array[RoleConstants::IS_ACTIVATED_UPDATED_BY] = $arg->getIs_activated_updated_by();
+            $arr = new QueryParameterEntity();
+            $arr->setColumn(RoleConstants::IS_ACTIVATED_UPDATED_BY);
+            $arr->setValue($arg->getIs_activated_updated_by());
+            $arr->setSql_data_type(\PDO::PARAM_STR);
+
+            $update_array[RoleConstants::IS_ACTIVATED_UPDATED_BY] = QueryParameterFactory::toKeyValArray($arr);
         }
 
 

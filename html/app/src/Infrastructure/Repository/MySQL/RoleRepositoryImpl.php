@@ -111,7 +111,12 @@ class RoleRepositoryImpl implements RoleRepository
     {
         try {
             $context = "$this->scope.update";
+
             $query_builder = new UpdateQueryBuilder($this->table_name);
+
+            if (count($params) < 1) {
+                throw new NoRowsException(sprintf("%s: %s", $context, SQLExceptionMessageConstants::NO_ROWS_AFFECTED));
+            }
 
             if ($query_params) {
                 foreach ($query_params as $query_param) {
@@ -121,10 +126,6 @@ class RoleRepositoryImpl implements RoleRepository
                 }
             } else {
                 $query_builder->addQueryFilter(RoleConstants::UID, $cursor, \PDO::PARAM_STR, "=");
-            }
-
-            if (count($params) < 1) {
-                throw new UnprocessableEntity(SQLExceptionMessageConstants::NO_UPDATED_COLUMNS);
             }
 
             foreach ($params as $updated_param) {

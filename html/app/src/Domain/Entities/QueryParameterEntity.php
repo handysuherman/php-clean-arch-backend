@@ -5,8 +5,8 @@ namespace app\src\Domain\Entities;
 class QueryParameterEntity
 {
 	private ?string $column;
-	private mixed $value;
-	private mixed $sql_data_type;
+	private mixed $value = null;
+	private mixed $sql_data_type = null;
 	private ?string $truthy = null;
 	private ?string $truthy_operator = null;
 
