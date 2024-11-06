@@ -12,21 +12,13 @@ use app\src\Common\Exceptions\TokenExceptions\TokenExpiredException;
 use app\src\Common\Exceptions\TokenExceptions\TokenTypeNotMatchException;
 use app\src\Common\Helpers\Identifier;
 use app\src\Common\Helpers\Time;
-use Dotenv\Dotenv;
+use app\src\tests\BaseTest;
 
-class TokenTest extends TestCase
+class TokenTest extends BaseTest
 {
-    private Token $token;
-    private PasetoKeyManager $keyManager;
-
     protected function setUp(): void
     {
-        $dotenv = Dotenv::createImmutable(__DIR__ . '/../../../../');
-        $dotenv->load();
-
-        $this->keyManager = new PasetoKeyManager();
-
-        $this->token = new Token($this->keyManager);
+        parent::setUp();
     }
 
     public function testCreateToken(): void

@@ -13,26 +13,20 @@ use app\src\Domain\Params\RoleQueryParams;
 use app\src\Infrastructure\Constants\RoleConstants;
 use app\src\Infrastructure\Repository\MySQL\RoleRepository;
 use app\src\Infrastructure\Repository\MySQL\RoleRepositoryImpl;
+use app\src\tests\BaseTest;
 use Dotenv\Dotenv;
-use PHPUnit\Framework\TestCase;
 
-class RoleRepositoryImplTest extends TestCase
+class RoleRepositoryImplTest extends BaseTest
 {
-    private ?\PDO $connection;
     private ?RoleRepository $repository;
-    private Config $config;
 
     protected function setUp(): void
     {
-        $dotenv = Dotenv::createImmutable(__DIR__ . '/../../../../../');
-        $dotenv->load();
+        parent::setUp();
+        parent::setMySQL();
 
-        $this->config = new Config();
-
-        $this->connection = MySQL::New($this->config->getDatabases()->getMysql()->getHost(), $this->config->getDatabases()->getMysql()->getDb_name(), $this->config->getDatabases()->getMysql()->getUsername(), $this->config->getDatabases()->getMysql()->getPassword(), $this->config->getDatabases()->getMysql()->getPort());
-        $this->repository = new RoleRepositoryImpl(new Logger("role-repository-test"), $this->connection);
+        $this->repository = new RoleRepositoryImpl($this->log, $this->connection);
     }
-
 
     public function testSave()
     {

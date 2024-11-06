@@ -20,7 +20,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 class RoleUsecaseImpl_saveTest extends BaseTest
 {
-
     /** @var MockObject&RoleRepository */
     private RoleRepository $repository;
     private RoleUsecase $usecase;

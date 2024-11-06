@@ -1,11 +1,6 @@
 <?php
 
-use app\src\Application\Config\Config;
-use app\src\Application\Config\PasetoKeyManager;
-
 use app\src\Application\Middlewares\AuthMiddleware;
-use Dotenv\Dotenv;
-use PHPUnit\Framework\TestCase;
 
 use app\src\Common\Constants\ClaimerRoleConstants;
 use app\src\Common\DTOs\ClaimerDTO;
@@ -13,7 +8,6 @@ use app\src\Common\Enums\DurationType;
 use app\src\Common\Enums\TokenType;
 use app\src\Common\Helpers\Identifier;
 use app\src\Common\Helpers\Time;
-use app\src\Common\Helpers\Token;
 
 use app\src\Common\Exceptions\AuthMiddlewareExceptions\InvalidAuthorizationFormatException;
 use app\src\Common\Exceptions\AuthMiddlewareExceptions\InvalidAuthorizationTypeException;
@@ -21,25 +15,17 @@ use app\src\Common\Exceptions\AuthMiddlewareExceptions\InvalidAuthorizationTypeE
 use app\src\Common\Exceptions\TokenExceptions\InsufficientTokenPermissionException;
 use app\src\Common\Exceptions\TokenExceptions\TokenExpiredException;
 use app\src\Common\Exceptions\TokenExceptions\TokenTypeNotMatchException;
+use app\src\tests\BaseTest;
 
-class AuthMiddlewareTest extends TestCase
+class AuthMiddlewareTest extends BaseTest
 {
-    private Token $token;
-    private PasetoKeyManager $keyManager;
     private AuthMiddleware $middleware;
 
     protected function setUp(): void
     {
-        $dotenv = Dotenv::createImmutable(__DIR__ . '/../../../');
-        $dotenv->load();
-
-        $this->keyManager = new PasetoKeyManager();
-
-        $this->token = new Token($this->keyManager);
-
+        parent::setUp();
         $this->middleware = new AuthMiddleware($this->token);
     }
-
 
     public function testOk()
     {
