@@ -42,7 +42,7 @@ class TokenTest extends BaseTest
         $this->assertEquals($dto->getType(), $verifiedDTO->getType());
     }
 
-    public function testExceptionVerifyTokenWithExpiredTokenDuration(): void
+    public function testErrExceptionVerifyTokenWithExpiredTokenDuration(): void
     {
         $this->expectException(TokenExpiredException::class);
         $this->expectExceptionMessage("This token has expired");
@@ -55,7 +55,7 @@ class TokenTest extends BaseTest
         $this->token->verify($tokenString, TokenType::ACCESS, 'test_platform');
     }
 
-    public function testExceptionVerifyTokenWithInvalidType(): void
+    public function testErrExceptionVerifyTokenWithInvalidType(): void
     {
         $this->expectException(TokenTypeNotMatchException::class);
 
@@ -95,7 +95,7 @@ class TokenTest extends BaseTest
         $this->assertEquals($dto->getType(), $verifiedDTO->getType());
     }
 
-    public function testExceptionVerifyTokenWithBlockedRoles(): void
+    public function testErrExceptionVerifyTokenWithBlockedRoles(): void
     {
 
         $dto = $this->testCreateRandom();
@@ -122,7 +122,7 @@ class TokenTest extends BaseTest
         $this->token->verify($tokenString, TokenType::ACCESS, 'test_platform', true, $allowedRoles);
     }
 
-    public function testExceptionVerifyTokenWithRolesCheckWithInvalidRolesOrUnavailableAllowedRoles(): void
+    public function testErrExceptionVerifyTokenWithRolesCheckWithInvalidRolesOrUnavailableAllowedRoles(): void
     {
         $this->expectException(InsufficientTokenPermissionException::class);
 
@@ -151,7 +151,7 @@ class TokenTest extends BaseTest
         $this->assertEquals($dto->getType(), $verifiedDTO->getType());
     }
 
-    public function testExceptionVerifyTokenWithInsufficientPermissions(): void
+    public function testErrExceptionVerifyTokenWithInsufficientPermissions(): void
     {
         $this->expectException(InsufficientTokenPermissionException::class);
 
