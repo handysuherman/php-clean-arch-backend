@@ -2,9 +2,13 @@
 
 namespace app\src\Common\DTOs\Request\Role;
 
-use app\src\Common\Exceptions\ValidationExceptions\DTOLengthLimitExceeded;
+use app\src\Common\Exceptions\ValidationExceptions\LengthLimitExceededException;
+use app\src\Common\Exceptions\ValidationExceptions\RequiredMinLengthException;
+use app\src\Common\Exceptions\ValidationExceptions\RequiredPropertyException;
+use app\src\Common\Validations\SchemaValidation;
+use Ulid\Ulid;
 
-class RoleDTORequest
+class UpdateRoleDTORequest implements SchemaValidation
 {
     private ?string $uid = null;
     private ?string $role_name = null;
@@ -23,11 +27,6 @@ class RoleDTORequest
 
     public function setUid(?string $value)
     {
-        if ($value) {
-            if (strlen($value) > 255) {
-                throw new DTOLengthLimitExceeded("role.uid length limit exceeded");
-            }
-        }
         $this->uid = $value;
     }
 
@@ -38,11 +37,6 @@ class RoleDTORequest
 
     public function setRole_name(?string $value)
     {
-        if ($value) {
-            if (strlen($value) > 255) {
-                throw new DTOLengthLimitExceeded("role.role_name length limit exceeded");
-            }
-        }
         $this->role_name = $value;
     }
 
@@ -73,11 +67,6 @@ class RoleDTORequest
 
     public function setCreated_at(?string $value)
     {
-        if ($value) {
-            if (strlen($value) > 255) {
-                throw new DTOLengthLimitExceeded("role.created_at length limit exceeded");
-            }
-        }
         $this->created_at = $value;
     }
 
@@ -88,11 +77,6 @@ class RoleDTORequest
 
     public function setCreated_by(?string $value)
     {
-        if ($value) {
-            if (strlen($value) > 255) {
-                throw new DTOLengthLimitExceeded("role.created_by length limit exceeded");
-            }
-        }
         $this->created_by = $value;
     }
 
@@ -113,11 +97,6 @@ class RoleDTORequest
 
     public function setIs_activated_updated_at(?string $value)
     {
-        if ($value) {
-            if (strlen($value) > 255) {
-                throw new DTOLengthLimitExceeded("role.is_activated_updated_at length limit exceeded");
-            }
-        }
         $this->is_activated_updated_at = $value;
     }
 
@@ -128,11 +107,37 @@ class RoleDTORequest
 
     public function setIs_activated_updated_by(?string $value)
     {
-        if ($value) {
-            if (strlen($value) > 255) {
-                throw new DTOLengthLimitExceeded("role.is_activated_updated_by length limit exceeded");
+        $this->is_activated_updated_by = $value;
+    }
+
+    public function validateRequestData(): bool
+    {
+        if (empty($this->uid)) {
+            throw new RequiredPropertyException("uid is required");
+        }
+
+        $parsed_uid = Ulid::fromString($this->uid);
+
+        if ($this->role_name) {
+            if (strlen($this->role_name) < 5) {
+                throw new RequiredMinLengthException("role.role_name min length was 5");
+            }
+
+            if (strlen($this->role_name) > 100) {
+                throw new LengthLimitExceededException("role.role_name length limit exceeded");
             }
         }
-        $this->is_activated_updated_by = $value;
+
+        if ($this->description) {
+            if (strlen($this->description) < 1) {
+                throw new RequiredMinLengthException("role.description min length was 1");
+            }
+
+            if (strlen($this->description) > 300) {
+                throw new LengthLimitExceededException("role.description length limit exceeded");
+            }
+        }
+
+        return true;
     }
 }

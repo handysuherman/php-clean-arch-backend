@@ -24,7 +24,7 @@ class BaseTest extends TestCase
     protected Config $config;
     protected Logger $log;
     protected Token $token;
-    protected MySQL $mysql;
+    protected ?MySQL $mysql = null;
 
     protected function setUp(): void
     {
@@ -85,6 +85,8 @@ class BaseTest extends TestCase
 
     protected function tearDown(): void
     {
-        $this->mysql->setConnection(null);
+        if ($this->mysql) {
+            $this->mysql->setConnection(null);
+        }
     }
 }

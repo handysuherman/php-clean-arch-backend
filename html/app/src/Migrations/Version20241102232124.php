@@ -23,7 +23,7 @@ final class Version20241102232124 extends AbstractMigration
         $this->addSql("        
         CREATE TABLE IF NOT EXISTS `role` (
   `uid` varchar(255) PRIMARY KEY NOT NULL,
-  `role_name` varchar(255) NOT NULL,
+  `role_name` varchar(100) NOT NULL,
   `description` text NOT NULL DEFAULT 'no-description',
   `role_name_slug` text NOT NULL COMMENT 'this should be created and updated, respectively when role_name changes',
   `created_at` varchar(255) NOT NULL,

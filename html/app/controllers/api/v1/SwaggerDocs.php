@@ -41,8 +41,8 @@ use OpenApi\Annotations as OA;
  *         ),
  *         @OA\Schema(
  *             schema="CreateRoleParams",
- *             @OA\Property(property="role_name", type="string", nullable=false, example="mock string"),
- *             @OA\Property(property="description", type="string", nullable=true, example="mock description")
+ *             @OA\Property(property="role_name", type="string", nullable=false, example="mock string", minLength=5, maxLength=100),
+ *             @OA\Property(property="description", type="string", nullable=true, example="mock description", minLength=1, maxLength=300)
  *         ),
  *         @OA\Schema(
  *             schema="UidSuccessApiResponse",

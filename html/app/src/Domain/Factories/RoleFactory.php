@@ -2,7 +2,7 @@
 
 namespace app\src\Domain\Factories;
 
-use app\src\Common\DTOs\Request\Role\RoleDTORequest;
+use app\src\Common\DTOs\Request\Role\UpdateRoleDTORequest;
 use app\src\Common\DTOs\Response\RoleDTOResponse;
 use app\src\Common\Helpers\Generation;
 use app\src\Common\Helpers\Identifier;
@@ -42,7 +42,7 @@ class RoleFactory
     }
 
 
-    public static function dtoRequestToEntity(RoleDTORequest $arg): RoleEntity
+    public static function dtoRequestToEntity(UpdateRoleDTORequest $arg): RoleEntity
     {
         $entity = new RoleEntity();
         $entity->setUid($arg->getUid());
@@ -58,7 +58,7 @@ class RoleFactory
         return $entity;
     }
 
-    public static function createUpdateArray(RoleDTORequest $arg, array $exclude = []): array
+    public static function createUpdateArray(UpdateRoleDTORequest $arg, array $exclude = []): array
     {
         $update_array = [];
 
