@@ -2,7 +2,7 @@
 
 namespace app\components;
 
-use app\src\Application\Context\RequestContext as Context;
+use app\src\Application\Contexts\RequestContext as Context;
 use yii\base\Component;
 
 class RequestContext extends Component

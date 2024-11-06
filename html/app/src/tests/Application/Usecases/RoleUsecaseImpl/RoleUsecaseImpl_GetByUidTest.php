@@ -50,7 +50,6 @@ class RoleUsecaseImpl_GetByUidTest extends BaseTest
         $mock_uid = Generation::randomString(12);
         $ctx = $this->createRandomContext($mock_uid);
 
-
         $this->repository->expects($this->never())
             ->method("findByUid");
 

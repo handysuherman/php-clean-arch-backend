@@ -50,6 +50,8 @@ class ApiAuthMiddleware extends ActionFilter
             $auth_user_claimer = $this->middleware->Validate($auth_token, $platform_key, isset($allowed_roles) && count($allowed_roles) !== 0, $allowed_roles);
 
             $this->request_context->getContext()->setAuth_user($auth_user_claimer);
+
+            return parent::beforeAction($action);
         } catch (AuthMiddlewareException $e) {
             $this->log->warning($context, $e->getMessage());
             return $this->handleError($e->getMessage());

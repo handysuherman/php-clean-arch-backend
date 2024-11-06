@@ -5,9 +5,7 @@ namespace app\src\Application\Usecases;
 use app\src\Application\Config\Config;
 use app\src\Application\Contexts\RequestContext;
 use app\src\Common\DTOs\Request\Role\CreateRoleDTORequest;
-use app\src\Common\DTOs\Request\Role\RoleDTORequest;
 use app\src\Common\DTOs\Response\RoleDTOResponse;
-use app\src\Common\Helpers\Generation;
 use app\src\Common\Helpers\Identifier;
 use app\src\Common\Helpers\Text;
 use app\src\Common\Helpers\Time;
@@ -15,7 +13,7 @@ use app\src\Common\Loggers\Logger;
 use app\src\Domain\Entities\RoleEntity;
 use app\src\Domain\Factories\RoleFactory;
 use app\src\Infrastructure\Repository\MySQL\RoleRepository;
-use InvalidArgumentException;
+use Ulid\Exception\InvalidUlidStringException;
 use Ulid\Ulid;
 
 class RoleUsecaseImpl implements RoleUsecase
@@ -62,12 +60,10 @@ class RoleUsecaseImpl implements RoleUsecase
             $response = $this->repository->findByUid($parsed_uid->__toString());
 
             return RoleFactory::toDTOResponse($response);
-        } catch (InvalidArgumentException $e) {
+        } catch (InvalidUlidStringException $e) {
             $this->log->warning($context, $e->getMessage());
 
             throw $e;
         }
-
-        return $response;
     }
 }

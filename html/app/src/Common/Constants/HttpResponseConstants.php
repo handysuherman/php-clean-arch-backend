@@ -15,7 +15,7 @@ class HttpResponseConstants
 
     // 4xx
     const STATUS_NOT_FOUND = 404;
-    const ERR_BAD_NOT_FOUND = "not found";
+    const ERR_NOT_FOUND = "not found";
 
     const STATUS_FORBIDDEN = 403;
     const ERR_FORBIDDEN = "forbidden";

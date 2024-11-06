@@ -4,6 +4,7 @@ namespace app\middlewares;
 
 use app\components\RequestContext;
 use app\src\Application\Config\Config;
+use app\src\Application\Contexts\RequestContext as Context;
 use app\src\Application\Middlewares\PlatformPermissionMiddleware;
 use app\src\Common\Constants\HttpResponseConstants;
 use app\src\Common\Exceptions\PlatformPermissionMiddlewareExceptions\PlatformPermissionMiddlewareException;
@@ -40,9 +41,12 @@ class ApiMiddleware extends ActionFilter
         try {
             $this->middleware->Validate($platform_key);
 
-            $this->request_context->getContext()->setPlatform_key($platform_key);
-            $this->request_context->getContext()->setUser_ip(Yii::$app->request->getUserIP());
-            $this->request_context->getContext()->setUser_agent(Yii::$app->request->getUserAgent());
+            $ctx = new Context();
+            $ctx->setPlatform_key($platform_key);
+            $ctx->setUser_ip(Yii::$app->request->getUserIP());
+            $ctx->setUser_agent(Yii::$app->request->getUserAgent());
+
+            $this->request_context->setContext($ctx);
 
             return parent::beforeAction($action);
         } catch (PlatformPermissionMiddlewareException $e) {

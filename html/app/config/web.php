@@ -1,5 +1,9 @@
 <?php
 
+use app\src\Application\Config\Config;
+use app\src\Common\Databases\MySQL;
+use app\src\Common\Loggers\Logger;
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
@@ -45,14 +49,41 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'enableStrictParsing' => false,
             'rules' => [
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => [
+                        'api/v1/role',
+                    ],
+                    'tokens' => [
+                        '{id}' => '<id:[A-Za-z0-9-]+>',
+                    ],
+                ],
             ],
         ],
-        */
+    ],
+    'container' => [
+        'singletons' => [
+            'app\src\Common\Loggers\Logger' => function () {
+                return new Logger("APP");
+            },
+            'app\src\Application\Config\Config' => function () {
+                return new Config();
+            },
+            'app\src\Common\Databases\MySQL' => [
+                'class' => 'app\src\Common\Databases\MySQL'
+            ],
+            'app\src\Application\Usecases\RoleUsecase' => [
+                'class' => 'app\src\Application\Usecases\RoleUsecaseImpl',
+            ],
+            'app\src\Infrastructure\Repository\MySQL\RoleRepository' => [
+                'class' => 'app\src\Infrastructure\Repository\MySQL\RoleRepositoryImpl',
+            ]
+        ]
     ],
     'params' => $params,
 ];

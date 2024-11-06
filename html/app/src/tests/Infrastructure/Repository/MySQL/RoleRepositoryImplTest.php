@@ -25,7 +25,7 @@ class RoleRepositoryImplTest extends BaseTest
         parent::setUp();
         parent::setMySQL();
 
-        $this->repository = new RoleRepositoryImpl($this->log, $this->connection);
+        $this->repository = new RoleRepositoryImpl($this->log, $this->mysql);
     }
 
     public function testSave()
@@ -186,7 +186,8 @@ class RoleRepositoryImplTest extends BaseTest
 
     protected function tearDown(): void
     {
-        $this->connection = null;
         $this->repository = null;
+
+        parent::tearDown();
     }
 }

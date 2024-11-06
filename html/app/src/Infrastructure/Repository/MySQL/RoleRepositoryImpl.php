@@ -4,6 +4,7 @@ namespace app\src\Infrastructure\Repository\MySQL;
 
 use app\src\Common\Constants\Exceptions\SQLExceptionMessageConstants;
 use app\src\Common\Constants\QueryConstants;
+use app\src\Common\Databases\MySQL;
 use app\src\Common\Exceptions\SQLExceptions\NoRowsException;
 use app\src\Common\Exceptions\SQLExceptions\SQLException;
 use app\src\Common\Exceptions\SQLExceptions\UnprocessableEntity;
@@ -26,9 +27,9 @@ class RoleRepositoryImpl implements RoleRepository
     private string $scope = "RoleRepositoryImpl";
     private string $table_name = "role";
 
-    public function __construct(Logger $log, PDO $connection)
+    public function __construct(Logger $log, MySQL $mysql)
     {
-        $this->connection = $connection;
+        $this->connection = $mysql->getConnection();
         $this->log = $log;
     }
 

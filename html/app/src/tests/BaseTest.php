@@ -24,7 +24,7 @@ class BaseTest extends TestCase
     protected Config $config;
     protected Logger $log;
     protected Token $token;
-    protected ?\PDO $connection;
+    protected MySQL $mysql;
 
     protected function setUp(): void
     {
@@ -40,7 +40,7 @@ class BaseTest extends TestCase
 
     protected function setMySQL(): void
     {
-        $this->connection = MySQL::New($this->config->getDatabases()->getMysql()->getHost(), $this->config->getDatabases()->getMysql()->getDb_name(), $this->config->getDatabases()->getMysql()->getUsername(), $this->config->getDatabases()->getMysql()->getPassword(), $this->config->getDatabases()->getMysql()->getPort());
+        $this->mysql = new MySQL($this->config);
     }
 
     protected function setRedis(): void {}
@@ -81,5 +81,10 @@ class BaseTest extends TestCase
         $arg->setAuth_user($token_dto);
 
         return $arg;
+    }
+
+    protected function tearDown(): void
+    {
+        $this->mysql->setConnection(null);
     }
 }

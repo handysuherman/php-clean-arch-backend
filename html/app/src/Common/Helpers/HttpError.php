@@ -11,6 +11,10 @@ class HttpError
         $error_message = strtolower($error_message);
 
         switch (true) {
+            case strpos($error_message, "no rows found") !== false:
+                return self::RestError(HttpResponseConstants::STATUS_NOT_FOUND, HttpResponseConstants::ERR_NOT_FOUND, $error_message, $debug);
+            case strpos($error_message, "invalid ulid") !== false:
+                return self::RestError(HttpResponseConstants::STATUS_BAD_REQUEST, HttpResponseConstants::ERR_BAD_REQUEST, $error_message, $debug);
             case strpos($error_message, "api key header") !== false:
                 return self::RestError(HttpResponseConstants::STATUS_UNAUTHORIZED, HttpResponseConstants::ERR_UNAUTHORIZED, $error_message, $debug);
             case strpos($error_message, "required header") !== false:
@@ -32,7 +36,7 @@ class HttpError
             HttpResponseConstants::STATUS => $status,
             HttpResponseConstants::MESSAGE => $err,
             HttpResponseConstants::DATA => $causes,
-            HttpResponseConstants::TIMESTAMP => Time::now(),
+            HttpResponseConstants::TIMESTAMP => Time::atomicMicroFormat(Time::now()),
         ];
 
         return $rest_error;

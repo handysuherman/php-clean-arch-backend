@@ -2,12 +2,35 @@
 
 namespace app\src\Common\Databases;
 
+use app\src\Application\Config\Config;
 use PDO;
 
 class MySQL
 {
-    public static function New(string $host, string $db_name, string $username, string $password, int $port = 3306,): PDO
+    protected Config $cfg;
+
+    private ?\PDO $connection;
+
+    public function __construct(Config $cfg)
     {
-        return new PDO("mysql:host=$host:$port;dbname=$db_name", $username, $password);
+        $this->cfg = $cfg;
+
+        $host = $this->cfg->getDatabases()->getMysql()->getHost();
+        $db_name = $this->cfg->getDatabases()->getMysql()->getDb_name();
+        $username = $this->cfg->getDatabases()->getMysql()->getUsername();
+        $password = $this->cfg->getDatabases()->getMysql()->getPassword();
+        $port = $this->cfg->getDatabases()->getMysql()->getPort();
+
+        $this->connection = new PDO("mysql:host=$host:$port;dbname=$db_name", $username, $password);
+    }
+
+    public function setConnection(?\PDO $value)
+    {
+        $this->connection = $value;
+    }
+
+    public function getConnection(): ?\PDO
+    {
+        return $this->connection;
     }
 }
