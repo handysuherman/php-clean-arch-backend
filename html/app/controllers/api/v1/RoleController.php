@@ -19,6 +19,7 @@ use app\src\Infrastructure\Constants\RoleConstants;
 use Exception;
 use Yii;
 
+// TODO: metadata search api for search detailed search properties
 class RoleController extends ApiController
 {
     protected RoleUsecase $usecase;
