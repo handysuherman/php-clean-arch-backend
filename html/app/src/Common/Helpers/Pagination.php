@@ -10,7 +10,9 @@ class Pagination
 
     private int $page = 1;
 
-    public function __construct(string $size = "10", string $page = "1")
+    private int $total_count = 0;
+
+    public function __construct(?string $size = "10", ?string $page = "1")
     {
         if (is_numeric($size) && (int)$size !== 0) {
             $this->size = (int)$size;
@@ -78,15 +80,25 @@ class Pagination
         return (float)$this->getPage() < (float)((float)$total_count / (float)$this->getSize());
     }
 
-    public function toPaginationResponse(int $total_count, mixed $data): array
+    public function toPaginationResponse(mixed $data): array
     {
         return [
-            PaginationConstants::TOTAL_COUNT => $total_count,
-            PaginationConstants::TOTAL_PAGES => $this->getTotalPages($total_count),
+            PaginationConstants::TOTAL_COUNT => $this->total_count,
+            PaginationConstants::TOTAL_PAGES => $this->getTotalPages($this->total_count),
             PaginationConstants::PAGE => $this->getPage(),
             PaginationConstants::SIZE => $this->getSize(),
-            PaginationConstants::HAS_MORE => $this->getHasMore($total_count),
+            PaginationConstants::HAS_MORE => $this->getHasMore($this->total_count),
             PaginationConstants::DATA_LIST => $data
         ];
+    }
+
+    public function getTotal_count(): int
+    {
+        return $this->total_count;
+    }
+
+    public function setTotal_count(int $value)
+    {
+        $this->total_count = $value;
     }
 }

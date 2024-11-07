@@ -12,4 +12,11 @@ class PaginationConstants
     const HAS_MORE = "has_more";
     const DATA_LIST = "list";
     const QUERY = "q";
+
+    const SORT_BY = "sort_by";
+    const SORT_ORDER = "sort_order";
+
+    const RANGE_PROPERTY = "range_property";
+    const FROM = "from";
+    const TO = "to";
 }

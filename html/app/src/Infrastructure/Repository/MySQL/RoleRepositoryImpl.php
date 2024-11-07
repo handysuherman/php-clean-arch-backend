@@ -2,6 +2,7 @@
 
 namespace app\src\Infrastructure\Repository\MySQL;
 
+use app\src\Application\Config\Config;
 use app\src\Common\Constants\Exceptions\SQLExceptionMessageConstants;
 use app\src\Common\Constants\QueryConstants;
 use app\src\Common\Databases\MySQL;
@@ -9,6 +10,7 @@ use app\src\Common\Exceptions\SQLExceptions\NoRowsException;
 use app\src\Common\Exceptions\SQLExceptions\SQLException;
 use app\src\Common\Exceptions\SQLExceptions\UnprocessableEntity;
 use app\src\Common\Helpers\DatabaseExceptionHandler;
+use app\src\Common\Helpers\Identifier;
 use app\src\Common\Loggers\Logger;
 use app\src\Domain\Builders\RoleQueryBuilder;
 use app\src\Domain\Builders\UpdateQueryBuilder;
@@ -22,15 +24,17 @@ use PDO;
 class RoleRepositoryImpl implements RoleRepository
 {
     protected PDO $connection;
+    protected Config $config;
     protected Logger $log;
 
     private string $scope = "RoleRepositoryImpl";
     private string $table_name = "role";
 
-    public function __construct(Logger $log, MySQL $mysql)
+    public function __construct(Config $cfg, Logger $log, MySQL $mysql)
     {
         $this->connection = $mysql->getConnection();
         $this->log = $log;
+        $this->cfg = $cfg;
     }
 
     public function save(RoleEntity $arg): void
@@ -89,6 +93,7 @@ class RoleRepositoryImpl implements RoleRepository
 
             if ($row = $statement->fetch()) {
                 $data = RoleFactory::fromRow($row);
+                $data->setUid(Identifier::encrypt($data->getUid(), $this->config->getKeys()->getApp_identifier_key()));
 
                 return $data;
             }
@@ -193,6 +198,7 @@ class RoleRepositoryImpl implements RoleRepository
             $query_builder->build();
 
             $sql_params = $query_builder->getSQLParams();
+
 
             $statement = $this->connection->prepare($query_builder->getSQL());
             foreach ($sql_params as $index => $param) {

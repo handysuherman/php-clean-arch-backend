@@ -6,10 +6,14 @@ use app\src\Application\Config\Config;
 use app\src\Application\Usecases\RoleUsecase;
 use app\src\Common\Constants\Exceptions\SQLExceptionMessageConstants;
 use app\src\Common\Constants\HttpResponseConstants;
+use app\src\Common\Constants\PaginationConstants;
+use app\src\Common\Constants\QueryConstants;
 use app\src\Common\DTOs\Request\Role\CreateRoleDTORequest;
+use app\src\Common\DTOs\Request\Role\ListRoleDTORequest;
 use app\src\Common\DTOs\Request\Role\UpdateRoleDTORequest;
 use app\src\Common\Exceptions\SQLExceptions\NoRowsException;
 use app\src\Common\Helpers\Identifier;
+use app\src\Common\Helpers\Pagination;
 use app\src\Common\Loggers\Logger;
 use app\src\Domain\Factories\RoleFactory;
 use app\src\Infrastructure\Constants\RoleConstants;
@@ -25,6 +29,70 @@ class RoleController extends ApiController
         $this->usecase = $usecase;
 
         parent::__construct($id, $module, $log, $cfg, $config);
+    }
+
+    public function actionIndex()
+    {
+        try {
+            $queryParams = Yii::$app->request->get();
+
+            // For debugging purposes, you can print the parameters
+            // var_dump();
+
+            // common search queries;
+            $page = Yii::$app->request->get(PaginationConstants::PAGE);
+            $size = Yii::$app->request->get(PaginationConstants::SIZE);
+            $search = Yii::$app->request->get(PaginationConstants::QUERY);
+            $sort_by = Yii::$app->request->get(PaginationConstants::SORT_BY);
+            $sort_order = Yii::$app->request->get(PaginationConstants::SORT_ORDER);
+            $range_property = Yii::$app->request->get(PaginationConstants::RANGE_PROPERTY);
+            $from = Yii::$app->request->get(PaginationConstants::FROM);
+            $to = Yii::$app->request->get(PaginationConstants::TO);
+
+            // additional filters
+            $is_activated = Yii::$app->request->get(RoleConstants::IS_ACTIVATED);
+
+            $pagination = new Pagination($size, $page);
+
+            $arg = new ListRoleDTORequest();
+            if ($search) {
+                $arg->setQ($search);
+            }
+
+            if ($sort_by) {
+                $arg->setSort_property($sort_by);
+            }
+
+            if ($sort_order) {
+                $arg->setSort_order($sort_order);
+            }
+
+            if ($from) {
+                $arg->setFrom($from);
+            }
+
+            if ($to) {
+                $arg->setTo($to);
+            }
+
+            if ($range_property) {
+                $arg->setRange_property($range_property);
+            }
+
+            if (!is_null($is_activated)) {
+                $arg->setIs_activated(true);
+
+                if ($is_activated === 'false') {
+                    $arg->setIs_activated(false);
+                }
+            }
+
+            $response = $this->usecase->list($this->request_context->getContext(), $arg, $pagination);
+
+            return parent::formatSuccessResponse(200, $response);
+        } catch (Exception $e) {
+            return parent::formatSuccessResponse(200, $pagination->toPaginationResponse([]), $e->getMessage());
+        }
     }
 
     /**
@@ -89,6 +157,25 @@ class RoleController extends ApiController
         }
     }
 
+    /**
+     * @OA\Put(
+     *     path="/roles/{id}",
+     *     tags={"Role"},
+     *     security={{"ApiKey":{}}},
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="string")),
+     *     @OA\RequestBody(
+     *         required=true, 
+     *         @OA\JsonContent(ref="#/components/schemas/UpdateRoleParams")
+     *     ),
+     *     @OA\Response(response="200", description="create",
+     *          @OA\JsonContent(ref="#/components/schemas/UidSuccessApiResponse")),
+     *     @OA\Response(response="400", description="Invalid input",
+     *          @OA\JsonContent(ref="#/components/schemas/ErrorResponse")),
+     *     )
+     * 
+     * @return Response
+     * @throws Exception
+     */
     public function actionUpdate($id)
     {
         try {

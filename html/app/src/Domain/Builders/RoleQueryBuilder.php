@@ -116,15 +116,7 @@ class RoleQueryBuilder
         $search_role_name->setTruthy("OR");
         $search_role_name->setTruthy_operator("LIKE");
 
-        $search_role_name_2 = new QueryParameterEntity();
-        $search_role_name_2->setColumn(RoleConstants::ROLE_NAME);
-        $search_role_name_2->setValue($search_text);
-        $search_role_name_2->setSql_data_type(\PDO::PARAM_STR);
-        $search_role_name_2->setTruthy("AND");
-        $search_role_name_2->setTruthy_operator("LIKE");
-
         $this->query_filters[] = QueryParameterFactory::toKeyValArray($search_role_name);
-        $this->query_filters[] = QueryParameterFactory::toKeyValArray($search_role_name_2);
     }
 
     public function withPagination(Pagination $pagination)

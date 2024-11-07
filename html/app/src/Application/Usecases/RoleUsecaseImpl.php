@@ -5,18 +5,23 @@ namespace app\src\Application\Usecases;
 use app\src\Application\Config\Config;
 use app\src\Application\Contexts\RequestContext;
 use app\src\Common\DTOs\Request\Role\CreateRoleDTORequest;
+use app\src\Common\DTOs\Request\Role\ListRoleDTORequest;
 use app\src\Common\DTOs\Request\Role\RoleDTORequest;
 use app\src\Common\DTOs\Request\Role\UpdateRoleDTORequest;
 use app\src\Common\DTOs\Response\RoleDTOResponse;
 use app\src\Common\Exceptions\ValidationExceptions\RequiredPropertyException;
 use app\src\Common\Exceptions\ValidationExceptions\ValidationException;
 use app\src\Common\Helpers\Identifier;
+use app\src\Common\Helpers\Pagination;
 use app\src\Common\Helpers\Text;
 use app\src\Common\Helpers\Time;
 use app\src\Common\Loggers\Logger;
+use app\src\Domain\Entities\QueryParameterEntity;
 use app\src\Domain\Entities\RoleEntity;
 use app\src\Domain\Factories\QueryParameterFactory;
 use app\src\Domain\Factories\RoleFactory;
+use app\src\Domain\Params\RoleQueryParams;
+use app\src\Infrastructure\Constants\RoleConstants;
 use app\src\Infrastructure\Repository\MySQL\RoleRepository;
 use Ulid\Exception\InvalidUlidStringException;
 use Ulid\Ulid;
@@ -110,5 +115,54 @@ class RoleUsecaseImpl implements RoleUsecase
 
             throw $e;
         }
+    }
+
+    public function list(RequestContext $ctx, ListRoleDTORequest $arg, Pagination $pagination): array
+    {
+        $context = $this->scope . "list";
+
+        $additional_filters = [];
+
+        $search_arg = new RoleQueryParams();
+        $search_arg->setSearch_text($arg->getQ());
+        $search_arg->setSort_order($arg->getSort_order());
+        $search_arg->setPagination($pagination);
+
+        if ($arg->getFrom()) {
+            $search_arg->setFrom($arg->getFrom());
+            $search_arg->setTo($arg->getTo());
+        }
+
+        if (!is_null($arg->getIs_activated())) {
+            var_dump("inside usecase");
+            var_dump($arg->getIs_activated());
+            $is_activated_filter = new QueryParameterEntity();
+
+            $is_activated_filter->setColumn(RoleConstants::IS_ACTIVATED);
+            $is_activated_filter->setValue($arg->getIs_activated());
+            $is_activated_filter->setSql_data_type(\PDO::PARAM_BOOL);
+            $is_activated_filter->setTruthy("=");
+
+            var_dump("inside filter");
+            var_dump($is_activated_filter->getValue());
+
+            $additional_filters[] = QueryParameterFactory::toKeyValArray($is_activated_filter);
+        }
+
+        if ($arg->getSort_property()) {
+            $search_arg->setSort_property($arg->getSort_property());
+        }
+
+        if ($arg->getRange_property()) {
+            $search_arg->setRange_property($arg->getRange_property());
+        }
+
+        $search_arg->setQuery_params($additional_filters);
+
+        $list_response = $this->repository->list($search_arg, true);
+        $total_count_search_text_response = $this->repository->count($search_arg, true);
+        $pagination->setTotal_count($total_count_search_text_response);
+
+        return $pagination->toPaginationResponse($list_response);
     }
 }
