@@ -26,7 +26,8 @@ class HttpError
             case strpos($error_message, "invalid platform key") !== false:
                 return self::RestError(HttpResponseConstants::STATUS_BAD_REQUEST, HttpResponseConstants::ERR_BAD_REQUEST, $error_message, $debug);
             default:
-                return self::RestError(HttpResponseConstants::STATUS_INTERNAL_SERVER_ERROR, HttpResponseConstants::ERR_INTERNAL_SERVER_ERROR, "unexpected error occured", true);
+                // return self::RestError(HttpResponseConstants::STATUS_INTERNAL_SERVER_ERROR, HttpResponseConstants::ERR_INTERNAL_SERVER_ERROR, "unexpected error occured", true);
+                return self::RestError(HttpResponseConstants::STATUS_INTERNAL_SERVER_ERROR, HttpResponseConstants::ERR_INTERNAL_SERVER_ERROR, $error_message, true);
         }
     }
 

@@ -8,6 +8,7 @@ use app\src\Application\Config\Config;
 use app\src\Common\Constants\HttpResponseConstants;
 use app\src\Common\Helpers\Http;
 use app\src\Common\Helpers\HttpError;
+use app\src\Common\Helpers\Identifier;
 use app\src\Common\Loggers\Logger;
 use Yii;
 use yii\rest\Controller;
@@ -51,7 +52,7 @@ class ApiController extends Controller
     public function formatUidArr(string $uid): array
     {
         return [
-            HttpResponseConstants::UID => $uid
+            HttpResponseConstants::UID => Identifier::encrypt($uid)
         ];
     }
 

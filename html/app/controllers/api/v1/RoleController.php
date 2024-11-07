@@ -9,6 +9,7 @@ use app\src\Common\Constants\HttpResponseConstants;
 use app\src\Common\DTOs\Request\Role\CreateRoleDTORequest;
 use app\src\Common\DTOs\Request\Role\UpdateRoleDTORequest;
 use app\src\Common\Exceptions\SQLExceptions\NoRowsException;
+use app\src\Common\Helpers\Identifier;
 use app\src\Common\Loggers\Logger;
 use app\src\Domain\Factories\RoleFactory;
 use app\src\Infrastructure\Constants\RoleConstants;
@@ -79,7 +80,7 @@ class RoleController extends ApiController
     public function actionView($id)
     {
         try {
-            $response = $this->usecase->getByUid($this->request_context->getContext(), $id);
+            $response = $this->usecase->getByUid($this->request_context->getContext(), Identifier::decrypt($id));
 
             return parent::formatSuccessResponse(200, RoleFactory::toKeyValArray($response), "OK");
         } catch (Exception $e) {
