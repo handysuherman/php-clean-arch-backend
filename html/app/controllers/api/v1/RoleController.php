@@ -80,7 +80,8 @@ class RoleController extends ApiController
     public function actionView($id)
     {
         try {
-            $response = $this->usecase->getByUid($this->request_context->getContext(), Identifier::decrypt($id));
+            $response = $this->usecase->getByUid($this->request_context->getContext(), Identifier::decrypt($id, $this->cfg->getKeys()->getApp_identifier_key()));
+            $response->setUid(Identifier::encrypt($response->getUid(), $this->cfg->getKeys()->getApp_identifier_key()));
 
             return parent::formatSuccessResponse(200, RoleFactory::toKeyValArray($response), "OK");
         } catch (Exception $e) {

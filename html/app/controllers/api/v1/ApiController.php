@@ -52,7 +52,7 @@ class ApiController extends Controller
     public function formatUidArr(string $uid): array
     {
         return [
-            HttpResponseConstants::UID => Identifier::encrypt($uid)
+            HttpResponseConstants::UID => Identifier::encrypt($uid, $this->cfg->getKeys()->getApp_identifier_key())
         ];
     }
 

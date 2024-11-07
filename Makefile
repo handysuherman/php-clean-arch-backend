@@ -1,3 +1,7 @@
+.PHONY: gen-identifier-key
+gen-identifier-key:
+	php -r 'echo base64_encode(sodium_crypto_aead_chacha20poly1305_keygen()) . "\n";'
+
 .PHONY: swagger-v1
 swagger-v1:
 	./vendor/bin/openapi --output api-docs.json ./controllers/api/v1

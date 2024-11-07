@@ -124,7 +124,7 @@ class RoleFactory
     public static function toKeyValArray(RoleEntity | RoleDTOResponse $arg): array
     {
         return [
-            RoleConstants::UID => Identifier::encrypt($arg->getUid()),
+            RoleConstants::UID => $arg->getUid(),
             RoleConstants::ROLE_NAME => $arg->getRole_name(),
             RoleConstants::DESCRIPTION => $arg->getDescription(),
             RoleConstants::ROLE_NAME_SLUG => $arg->getRole_name_slug(),
