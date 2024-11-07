@@ -2,9 +2,11 @@
 
 namespace app\src\Common\DTOs\Request;
 
+use app\src\Common\Helpers\Pagination;
 
 class SearchDTORequest
 {
+    protected Pagination $pagination;
     protected ?string $from = null;
     protected ?string $to = null;
     protected string $sort_order = "DESC";
@@ -48,5 +50,15 @@ class SearchDTORequest
     public function setQ(string $value)
     {
         $this->q = $value;
+    }
+
+    public function getPagination(): Pagination
+    {
+        return $this->pagination;
+    }
+
+    public function setPagination(Pagination $value)
+    {
+        $this->pagination = $value;
     }
 }

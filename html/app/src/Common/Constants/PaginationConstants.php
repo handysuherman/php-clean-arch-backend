@@ -16,7 +16,7 @@ class PaginationConstants
     const SORT_BY = "sort_by";
     const SORT_ORDER = "sort_order";
 
-    const RANGE_PROPERTY = "range_property";
+    const RANGE_BY = "range_by";
     const FROM = "from";
     const TO = "to";
 }

@@ -16,5 +16,5 @@ interface RoleUsecase
     public function save(RequestContext $ctx, CreateRoleDTORequest $arg): string;
     public function getByUid(RequestContext $ctx, string $uid): RoleDTOResponse;
     public function update(RequestContext $ctx, UpdateRoleDTORequest $arg): string;
-    public function list(RequestContext $ctx, ListRoleDTORequest $arg, Pagination $pagination): array;
+    public function list(RequestContext $ctx, ListRoleDTORequest $arg): array;
 }

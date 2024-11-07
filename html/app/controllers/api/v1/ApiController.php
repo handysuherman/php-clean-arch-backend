@@ -56,6 +56,17 @@ class ApiController extends Controller
         ];
     }
 
+    public function handleStrBool(string $str_bool): bool
+    {
+        $b = true;
+
+        if ($str_bool === "false") {
+            $b = false;
+        }
+
+        return $b;
+    }
+
     public function formatSuccessResponse($status, $data = null, $message = null)
     {
         $response = Http::SuccessResponse($status, $data, $message);

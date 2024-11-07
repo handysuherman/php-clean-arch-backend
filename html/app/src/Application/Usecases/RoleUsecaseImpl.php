@@ -117,7 +117,8 @@ class RoleUsecaseImpl implements RoleUsecase
         }
     }
 
-    public function list(RequestContext $ctx, ListRoleDTORequest $arg, Pagination $pagination): array
+    // TODO: test
+    public function list(RequestContext $ctx, ListRoleDTORequest $arg): array
     {
         $context = $this->scope . "list";
 
@@ -126,16 +127,17 @@ class RoleUsecaseImpl implements RoleUsecase
         $search_arg = new RoleQueryParams();
         $search_arg->setSearch_text($arg->getQ());
         $search_arg->setSort_order($arg->getSort_order());
-        $search_arg->setPagination($pagination);
+        $search_arg->setPagination($arg->getPagination());
 
         if ($arg->getFrom()) {
             $search_arg->setFrom($arg->getFrom());
+        }
+
+        if ($arg->getTo()) {
             $search_arg->setTo($arg->getTo());
         }
 
         if (!is_null($arg->getIs_activated())) {
-            var_dump("inside usecase");
-            var_dump($arg->getIs_activated());
             $is_activated_filter = new QueryParameterEntity();
 
             $is_activated_filter->setColumn(RoleConstants::IS_ACTIVATED);
@@ -143,26 +145,27 @@ class RoleUsecaseImpl implements RoleUsecase
             $is_activated_filter->setSql_data_type(\PDO::PARAM_BOOL);
             $is_activated_filter->setTruthy("=");
 
-            var_dump("inside filter");
-            var_dump($is_activated_filter->getValue());
-
             $additional_filters[] = QueryParameterFactory::toKeyValArray($is_activated_filter);
         }
 
         if ($arg->getSort_property()) {
+            $search_arg->setWith_sort(true);
             $search_arg->setSort_property($arg->getSort_property());
         }
 
         if ($arg->getRange_property()) {
+            $search_arg->setWith_range(true);
             $search_arg->setRange_property($arg->getRange_property());
         }
 
         $search_arg->setQuery_params($additional_filters);
 
         $list_response = $this->repository->list($search_arg, true);
-        $total_count_search_text_response = $this->repository->count($search_arg, true);
-        $pagination->setTotal_count($total_count_search_text_response);
 
-        return $pagination->toPaginationResponse($list_response);
+        $total_count_search_text_response = $this->repository->count($search_arg, true);
+
+        $arg->getPagination()->setTotal_count($total_count_search_text_response);
+
+        return $arg->getPagination()->toPaginationResponse($list_response);
     }
 }

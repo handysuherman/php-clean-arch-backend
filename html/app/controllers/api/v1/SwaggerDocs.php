@@ -40,6 +40,15 @@ use OpenApi\Annotations as OA;
  *             @OA\Property(property="is_activated_updated_by", type="string", nullable=false, example="01JC083YJ6K9D91BW4WQQBWWZH", default="system")
  *         ),
  *         @OA\Schema(
+ *             schema="RoleList",
+ *             @OA\Property(property="total_count", type="integer", nullable=false, example=10, default=0),
+ *             @OA\Property(property="total_pages", type="integer", nullable=false, example=10, default=0),
+ *             @OA\Property(property="page", type="integer", nullable=false, example=1, default=1),
+ *             @OA\Property(property="size", type="integer", nullable=false, example=10, default=10),
+ *             @OA\Property(property="has_next_page", type="boolean", nullable=false, example=true, default=false),
+ *             @OA\Property(property="list", type="array", nullable=false, @OA\Items(ref="#/components/schemas/Role", default="[]"))
+ *         ),
+ *         @OA\Schema(
  *             schema="CreateRoleParams",
  *             @OA\Property(property="role_name", type="string", nullable=false, example="mock string", minLength=5, maxLength=100),
  *             @OA\Property(property="description", type="string", nullable=true, example="mock description", minLength=1, maxLength=300, default=null)
@@ -56,6 +65,13 @@ use OpenApi\Annotations as OA;
  *             @OA\Property(property="message", type="string", nullable=false, example="OK"),
  *             @OA\Property(property="timestamp", type="string", nullable=false, example="2024-11-06T08:05:38.486431+00:00"),
  *             @OA\Property(property="data", ref="#/components/schemas/Uid", nullable=true)
+ *         ),
+ *        @OA\Schema(
+ *             schema="RoleListSuccessApiResponse",
+ *             @OA\Property(property="status", type="integer"),
+ *             @OA\Property(property="message", type="string"),
+ *             @OA\Property(property="timestamp", type="integer"),
+ *             @OA\Property(property="data", type="object", ref="#/components/schemas/RoleList", nullable=false)
  *         ),
  *         @OA\Schema(
  *             schema="RoleSuccessApiResponse",

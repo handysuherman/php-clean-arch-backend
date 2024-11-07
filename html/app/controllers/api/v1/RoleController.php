@@ -5,7 +5,6 @@ namespace app\controllers\api\v1;
 use app\src\Application\Config\Config;
 use app\src\Application\Usecases\RoleUsecase;
 use app\src\Common\Constants\Exceptions\SQLExceptionMessageConstants;
-use app\src\Common\Constants\HttpResponseConstants;
 use app\src\Common\Constants\PaginationConstants;
 use app\src\Common\Constants\QueryConstants;
 use app\src\Common\DTOs\Request\Role\CreateRoleDTORequest;
@@ -31,13 +30,74 @@ class RoleController extends ApiController
         parent::__construct($id, $module, $log, $cfg, $config);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/roles",
+     *     tags={"Role"},
+     *     security={{"ApiKey":{}}},
+     *     description="Please refer to RoleListSuccessApiResponse schema for detailed information on the response body",
+     *     @OA\Parameter(
+     *         name="q",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="string", example="mock role name", default=""),
+     *         description="search text of the list, the default value should be empty string"
+     *     ),
+     *     @OA\Parameter(
+     *         name="sort_by",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="string", example="mock role property", default="created_at"),
+     *         description="please refer to /metadata api to see list of available metadata for this properties (sort_able_properties)"
+     *     ),
+     *     @OA\Parameter(
+     *         name="sort_order",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="string", example="desc", default="desc"),
+     *         description="the value is either desc or asc"
+     *     ),
+     *     @OA\Parameter(
+     *         name="range_by",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="string", example="mock range properties", default=null),
+     *         description="please refer to /metadata api to see list of available metadata for this properties (range_able_properties)"
+     *     ),
+     *     @OA\Parameter(
+     *         name="from",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="string", example="2024-11-06T00:00:00.000000+00:00"),
+     *         description="the default value should be current_time with example value representation format."
+     *     ),
+     *     @OA\Parameter(
+     *         name="to",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="string", example="2024-11-06T00:00:00.000000+00:00"),
+     *         description="the default value should be (current_time + 30 days) with example value representation format."
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="string", example="1", default="1"),
+     *         description="page of the list"
+     *     ),
+     *     @OA\Response(response="200", description="OK",
+     *     @OA\JsonContent(ref="#/components/schemas/RoleListSuccessApiResponse")),
+     *     @OA\Response(response="404", description="no rows found",
+     *     @OA\JsonContent(ref="#/components/schemas/ErrorResponse"))
+     *     )
+     * 
+     * @return Response
+     * @throws Exception
+     */
     public function actionIndex()
     {
         try {
-            $queryParams = Yii::$app->request->get();
-
-            // For debugging purposes, you can print the parameters
-            // var_dump();
+            $query_params = Yii::$app->request->get();
 
             // common search queries;
             $page = Yii::$app->request->get(PaginationConstants::PAGE);
@@ -45,22 +105,26 @@ class RoleController extends ApiController
             $search = Yii::$app->request->get(PaginationConstants::QUERY);
             $sort_by = Yii::$app->request->get(PaginationConstants::SORT_BY);
             $sort_order = Yii::$app->request->get(PaginationConstants::SORT_ORDER);
-            $range_property = Yii::$app->request->get(PaginationConstants::RANGE_PROPERTY);
+            $range_by = Yii::$app->request->get(PaginationConstants::RANGE_BY);
             $from = Yii::$app->request->get(PaginationConstants::FROM);
             $to = Yii::$app->request->get(PaginationConstants::TO);
 
             // additional filters
             $is_activated = Yii::$app->request->get(RoleConstants::IS_ACTIVATED);
 
+            // pagination
             $pagination = new Pagination($size, $page);
 
+            // dto
             $arg = new ListRoleDTORequest();
+            $arg->setPagination($pagination);
+
             if ($search) {
                 $arg->setQ($search);
             }
 
             if ($sort_by) {
-                $arg->setSort_property($sort_by);
+                $arg->setSort_property(strtoupper($sort_by));
             }
 
             if ($sort_order) {
@@ -75,16 +139,12 @@ class RoleController extends ApiController
                 $arg->setTo($to);
             }
 
-            if ($range_property) {
-                $arg->setRange_property($range_property);
+            if ($range_by) {
+                $arg->setRange_property($range_by);
             }
 
             if (!is_null($is_activated)) {
-                $arg->setIs_activated(true);
-
-                if ($is_activated === 'false') {
-                    $arg->setIs_activated(false);
-                }
+                $arg->setIs_activated(parent::handleStrBool($is_activated));
             }
 
             $response = $this->usecase->list($this->request_context->getContext(), $arg, $pagination);
@@ -99,7 +159,8 @@ class RoleController extends ApiController
      * @OA\Post(
      *     path="/roles",
      *     tags={"Role"},
-     *      security={{"ApiKey":{}}},
+     *     security={{"ApiKey":{}}},
+     *     description="Please refer to CreateRoleParams schema for detailed information on the parameters.",
      *     @OA\RequestBody(
      *         required=true, 
      *         @OA\JsonContent(ref="#/components/schemas/CreateRoleParams")
@@ -135,6 +196,7 @@ class RoleController extends ApiController
      *     path="/roles/{id}",
      *     tags={"Role"},
      *     security={{"ApiKey":{}}},
+     *     description="Please refer to RoleSuccessApiResponse schema for detailed information on the response body",
      *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="string")),
      *     @OA\Response(response="200", description="OK",
      *     @OA\JsonContent(ref="#/components/schemas/RoleSuccessApiResponse")),
@@ -162,6 +224,7 @@ class RoleController extends ApiController
      *     path="/roles/{id}",
      *     tags={"Role"},
      *     security={{"ApiKey":{}}},
+     *     description="Please refer to UpdateRoleParams schema for detailed information on the parameters.",
      *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="string")),
      *     @OA\RequestBody(
      *         required=true, 
