@@ -3,6 +3,7 @@
 use app\src\Application\Config\Config;
 use app\src\Common\Databases\MySQL;
 use app\src\Common\Helpers\Generation;
+use app\src\Common\Helpers\Identifier;
 use app\src\Common\Helpers\Pagination;
 use app\src\Common\Loggers\Logger;
 use app\src\Domain\Entities\QueryParameterEntity;
@@ -25,7 +26,7 @@ class RoleRepositoryImplTest extends BaseTest
         parent::setUp();
         parent::setMySQL();
 
-        $this->repository = new RoleRepositoryImpl($this->log, $this->mysql);
+        $this->repository = new RoleRepositoryImpl($this->config, $this->log, $this->mysql);
     }
 
     public function testSave()
@@ -38,10 +39,10 @@ class RoleRepositoryImplTest extends BaseTest
     {
         $arg = $this->createRandom();
 
-        $response = $this->repository->findByUid($arg->getUid());
+        $response = $this->repository->findByUid(Identifier::decrypt($arg->getUid(), $this->config->getKeys()->getApp_identifier_key()));
 
         $this->assertNotEmpty($response);
-        $this->assertEquals($arg->getUid(), $response->getUid());
+        $this->assertEquals(Identifier::decrypt($arg->getUid(), $this->config->getKeys()->getApp_identifier_key()), Identifier::decrypt($response->getUid(), $this->config->getKeys()->getApp_identifier_key()));
         $this->assertEquals($arg->getRole_name(), $response->getRole_name());
         $this->assertEquals($arg->getRole_name_slug(), $response->getRole_name_slug());
         $this->assertEquals($arg->getCreated_at(), $response->getCreated_at());
@@ -64,16 +65,16 @@ class RoleRepositoryImplTest extends BaseTest
 
         $update_filters[] = QueryParameterFactory::toKeyValArray($updated_role_name);
 
-        $this->repository->update($arg->getUid(), $update_filters);
+        $this->repository->update(Identifier::decrypt($arg->getUid(), $this->config->getKeys()->getApp_identifier_key()), $update_filters);
 
-        $response = $this->repository->findByUid($arg->getUid());
+        $response = $this->repository->findByUid(Identifier::decrypt($arg->getUid(), $this->config->getKeys()->getApp_identifier_key()));
 
         $this->assertNotEmpty($response);
 
         $this->assertNotEquals($arg->getRole_name(), $response->getRole_name());
         $this->assertEquals($updated_role_name->getValue(), $response->getRole_name());
 
-        $this->assertEquals($arg->getUid(), $response->getUid());
+        $this->assertEquals(Identifier::decrypt($arg->getUid(), $this->config->getKeys()->getApp_identifier_key()), Identifier::decrypt($response->getUid(), $this->config->getKeys()->getApp_identifier_key()));
         $this->assertEquals($arg->getRole_name_slug(), $response->getRole_name_slug());
         $this->assertEquals($arg->getCreated_at(), $response->getCreated_at());
         $this->assertEquals($arg->getCreated_by(), $response->getCreated_by());
@@ -85,8 +86,6 @@ class RoleRepositoryImplTest extends BaseTest
     public function testUpdateRoleNameOnlyWithVariousFilters()
     {
         $arg = $this->createRandom();
-
-
         $update_filters = [];
 
         $updated_role_name = new QueryParameterEntity();
@@ -106,16 +105,16 @@ class RoleRepositoryImplTest extends BaseTest
 
         $filters[] = QueryParameterFactory::toKeyValArray($role_name_slug);
 
-        $this->repository->update($arg->getUid(), $update_filters, $filters);
+        $this->repository->update(Identifier::decrypt($arg->getUid(), $this->config->getKeys()->getApp_identifier_key()), $update_filters, $filters);
 
-        $response = $this->repository->findByUid($arg->getUid());
+        $response = $this->repository->findByUid(Identifier::decrypt($arg->getUid(), $this->config->getKeys()->getApp_identifier_key()));
 
         $this->assertNotEmpty($response);
 
         $this->assertNotEquals($arg->getRole_name(), $response->getRole_name());
         $this->assertEquals($updated_role_name->getValue(), $response->getRole_name());
 
-        $this->assertEquals($arg->getUid(), $response->getUid());
+        $this->assertEquals(Identifier::decrypt($arg->getUid(), $this->config->getKeys()->getApp_identifier_key()), Identifier::decrypt($response->getUid(), $this->config->getKeys()->getApp_identifier_key()));
         $this->assertEquals($arg->getRole_name_slug(), $response->getRole_name_slug());
         $this->assertEquals($arg->getCreated_at(), $response->getCreated_at());
         $this->assertEquals($arg->getCreated_by(), $response->getCreated_by());
