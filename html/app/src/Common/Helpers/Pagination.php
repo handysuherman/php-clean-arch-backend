@@ -2,7 +2,7 @@
 
 namespace app\src\Common\Helpers;
 
-use app\src\Common\Constants\PaginationConstants;
+use app\src\Common\Constants\HttpConstants;
 
 class Pagination
 {
@@ -83,12 +83,12 @@ class Pagination
     public function toPaginationResponse(mixed $data): array
     {
         return [
-            PaginationConstants::TOTAL_COUNT => $this->total_count,
-            PaginationConstants::TOTAL_PAGES => $this->getTotalPages($this->total_count),
-            PaginationConstants::PAGE => $this->getPage(),
-            PaginationConstants::SIZE => $this->getSize(),
-            PaginationConstants::HAS_MORE => $this->getHasMore($this->total_count),
-            PaginationConstants::DATA_LIST => $data
+            HttpConstants::TOTAL_COUNT => $this->total_count,
+            HttpConstants::TOTAL_PAGES => $this->getTotalPages($this->total_count),
+            HttpConstants::PAGE => $this->getPage(),
+            HttpConstants::SIZE => $this->getSize(),
+            HttpConstants::HAS_MORE => $this->getHasMore($this->total_count),
+            HttpConstants::DATA_LIST => $data
         ];
     }
 

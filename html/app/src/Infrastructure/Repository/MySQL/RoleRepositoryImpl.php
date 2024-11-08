@@ -94,9 +94,6 @@ class RoleRepositoryImpl implements RoleRepository
             if ($row = $statement->fetch()) {
                 $data = RoleFactory::fromRow($row);
                 $data->setUid(Identifier::encrypt($data->getUid(), $this->config->getKeys()->getApp_identifier_key()));
-                var_dump(sprintf("actual key: %s", $this->config->getKeys()->getApp_identifier_key()));
-                var_dump($data->getUid());
-
                 return $data;
             }
 

@@ -5,8 +5,7 @@ namespace app\controllers\api\v1;
 use app\src\Application\Config\Config;
 use app\src\Application\Usecases\RoleUsecase;
 use app\src\Common\Constants\Exceptions\SQLExceptionMessageConstants;
-use app\src\Common\Constants\PaginationConstants;
-use app\src\Common\Constants\QueryConstants;
+use app\src\Common\Constants\HttpConstants;
 use app\src\Common\DTOs\Request\Role\CreateRoleDTORequest;
 use app\src\Common\DTOs\Request\Role\ListRoleDTORequest;
 use app\src\Common\DTOs\Request\Role\UpdateRoleDTORequest;
@@ -101,14 +100,14 @@ class RoleController extends ApiController
             $query_params = Yii::$app->request->get();
 
             // common search queries;
-            $page = Yii::$app->request->get(PaginationConstants::PAGE);
-            $size = Yii::$app->request->get(PaginationConstants::SIZE);
-            $search = Yii::$app->request->get(PaginationConstants::QUERY);
-            $sort_by = Yii::$app->request->get(PaginationConstants::SORT_BY);
-            $sort_order = Yii::$app->request->get(PaginationConstants::SORT_ORDER);
-            $range_by = Yii::$app->request->get(PaginationConstants::RANGE_BY);
-            $from = Yii::$app->request->get(PaginationConstants::FROM);
-            $to = Yii::$app->request->get(PaginationConstants::TO);
+            $page = Yii::$app->request->get(HttpConstants::PAGE);
+            $size = Yii::$app->request->get(HttpConstants::SIZE);
+            $search = Yii::$app->request->get(HttpConstants::QUERY);
+            $sort_by = Yii::$app->request->get(HttpConstants::SORT_BY);
+            $sort_order = Yii::$app->request->get(HttpConstants::SORT_ORDER);
+            $range_by = Yii::$app->request->get(HttpConstants::RANGE_BY);
+            $from = Yii::$app->request->get(HttpConstants::FROM);
+            $to = Yii::$app->request->get(HttpConstants::TO);
 
             // additional filters
             $is_activated = Yii::$app->request->get(RoleConstants::IS_ACTIVATED);

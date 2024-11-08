@@ -10,7 +10,7 @@ class SearchParams
     protected string $wildcard = "%";
     protected string $search_text = "";
     protected string $sort_order = "DESC";
-    protected ?array $query_params = null;
+    protected ?array $query_params = [];
     protected ?string $from = null;
     protected ?string $to = null;
     protected bool $with_sort = true;

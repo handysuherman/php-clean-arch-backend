@@ -1,34 +1,22 @@
 <?php
 
-use app\src\Application\Usecases\RoleUsecase;
-use app\src\Application\Usecases\RoleUsecaseImpl;
 use app\src\Common\DTOs\Request\Role\UpdateRoleDTORequest;
 use app\src\Common\Helpers\Identifier;
 use app\src\Domain\Factories\RoleFactory;
-use app\src\Infrastructure\Repository\MySQL\RoleRepository;
-use app\src\tests\BaseTest;
-use PHPUnit\Framework\MockObject\MockObject;
 use app\src\Application\Contexts\RequestContext;
 use app\src\Common\Helpers\Text;
 use app\src\Domain\Factories\QueryParameterFactory;
 use app\src\Infrastructure\Constants\RoleConstants;
+use app\src\tests\Application\Usecases\RoleUsecaseImpl\RoleUsecaseImpl_Test;
 use Ulid\Ulid;
 
-class RoleUsecaseImpl_UpdateTest extends BaseTest
+class RoleUsecaseImpl_UpdateTest extends RoleUsecaseImpl_Test
 {
-    /** @var MockObject&RoleRepository */
-    private RoleRepository $repository;
-    private RoleUsecase $usecase;
-
     protected string $error_message = "";
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->repository = $this->createMock(RoleRepository::class);
-
-        $this->usecase = new RoleUsecaseImpl($this->repository, $this->config, $this->log);
     }
 
     public function testUpdate_Case_OK()

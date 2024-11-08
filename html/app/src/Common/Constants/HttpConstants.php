@@ -3,7 +3,7 @@
 namespace app\src\Common\Constants;
 
 
-class PaginationConstants
+class HttpConstants
 {
     const TOTAL_COUNT = "total_count";
     const TOTAL_PAGES = "total_pages";
@@ -19,4 +19,8 @@ class PaginationConstants
     const RANGE_BY = "range_by";
     const FROM = "from";
     const TO = "to";
+
+    const OPERATIONS = "operations";
+    const SORT_ABLE_PROPERTIES = "sort_able_properties";
+    const RANGE_ABLE_PROPERTIES = "range_able_properties";
 }

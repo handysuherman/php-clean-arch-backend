@@ -4,6 +4,7 @@ namespace app\src\Application\Usecases;
 
 use app\src\Application\Config\Config;
 use app\src\Application\Contexts\RequestContext;
+use app\src\Common\Constants\HttpConstants;
 use app\src\Common\DTOs\Request\Role\CreateRoleDTORequest;
 use app\src\Common\DTOs\Request\Role\ListRoleDTORequest;
 use app\src\Common\DTOs\Request\Role\RoleDTORequest;
@@ -16,6 +17,7 @@ use app\src\Common\Helpers\Pagination;
 use app\src\Common\Helpers\Text;
 use app\src\Common\Helpers\Time;
 use app\src\Common\Loggers\Logger;
+use app\src\Domain\Builders\RoleQueryBuilder;
 use app\src\Domain\Entities\QueryParameterEntity;
 use app\src\Domain\Entities\RoleEntity;
 use app\src\Domain\Factories\QueryParameterFactory;
@@ -117,7 +119,6 @@ class RoleUsecaseImpl implements RoleUsecase
         }
     }
 
-    // TODO: test
     public function list(RequestContext $ctx, ListRoleDTORequest $arg): array
     {
         $context = $this->scope . "list";
@@ -167,5 +168,19 @@ class RoleUsecaseImpl implements RoleUsecase
         $arg->getPagination()->setTotal_count($total_count_search_text_response);
 
         return $arg->getPagination()->toPaginationResponse($list_response);
+    }
+
+    public function metadata(): array
+    {
+        $qb = new RoleQueryBuilder();
+
+        return [
+            HttpConstants::OPERATIONS => [
+                HttpConstants::DATA_LIST => [
+                    HttpConstants::SORT_ABLE_PROPERTIES => $qb->getSortable_columns(),
+                    HttpConstants::RANGE_ABLE_PROPERTIES => $qb->getRange_betweenable_columns(),
+                ]
+            ]
+        ];
     }
 }
