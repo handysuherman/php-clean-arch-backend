@@ -263,4 +263,28 @@ class RoleController extends ApiController
             return parent::formatErrorResponse($e->getMessage());
         }
     }
+
+    /**
+     * @OA\Get(
+     *     path="/roles/metadata",
+     *     tags={"Role"},
+     *     security={{"ApiKey":{}}},
+     *     description="Please refer to RoleSuccessApiResponse schema for detailed information on the response body",
+     *     @OA\Response(response="200", description="OK",
+     *     @OA\JsonContent(ref="#/components/schemas/MetadataSuccessApiResponse")),
+     *     @OA\Response(response="404", description="no rows found",
+     *     @OA\JsonContent(ref="#/components/schemas/ErrorResponse"))
+     *     )
+     * 
+     * @return Response
+     * @throws Exception
+     */
+    public function actionMetadata($id)
+    {
+        try {
+            return parent::formatSuccessResponse(200, $this->usecase->metadata(), "OK");
+        } catch (Exception $e) {
+            return parent::formatErrorResponse($e->getMessage());
+        }
+    }
 }

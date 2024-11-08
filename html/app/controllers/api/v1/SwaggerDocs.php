@@ -53,6 +53,26 @@ use OpenApi\Annotations as OA;
  *             @OA\Property(property="role_name", type="string", nullable=false, example="mock string", minLength=5, maxLength=100),
  *             @OA\Property(property="description", type="string", nullable=true, example="mock description", minLength=1, maxLength=300, default=null)
  *         ),
+ *        @OA\Schema(
+ *             schema="MetadataSuccessApiResponse",
+ *             @OA\Property(property="status", type="integer", nullable=false, example=200),
+ *             @OA\Property(property="message", type="string", nullable=false, example="OK"),
+ *             @OA\Property(property="timestamp", type="string", nullable=false, example="2024-11-06T08:05:38.486431+00:00"),
+ *             @OA\Property(property="data", type="object", ref="#/components/schemas/MetadataOperations", nullable=false)
+ *         ),
+ *         @OA\Schema(
+ *             schema="MetadataOperations",
+ *             @OA\Property(property="operations", type="object",  ref="#/components/schemas/Metadata", nullable=false, example="{}", default="{}"),
+ *         ),
+ *         @OA\Schema(
+ *             schema="Metadata",
+ *             @OA\Property(property="list", type="object",  ref="#/components/schemas/ListMetadataProperty", nullable=false, example="{}", default="{}"),
+ *         ),
+ *         @OA\Schema(
+ *             schema="ListMetadataProperty",
+ *             @OA\Property(property="sort_able_properties", type="array", nullable=false, @OA\Items(type="string", nullable=true, example="created_at"), default="[]"),
+ *             @OA\Property(property="range_able_properties", type="array", nullable=false, @OA\Items(type="string", nullable=true, example="created_at"), default="[]")
+ *         ),
  *         @OA\Schema(
  *             schema="UpdateRoleParams",
  *             @OA\Property(property="role_name", type="string", nullable=true, example="mock string", minLength=5, maxLength=100, default=null),
@@ -68,9 +88,9 @@ use OpenApi\Annotations as OA;
  *         ),
  *        @OA\Schema(
  *             schema="RoleListSuccessApiResponse",
- *             @OA\Property(property="status", type="integer"),
- *             @OA\Property(property="message", type="string"),
- *             @OA\Property(property="timestamp", type="integer"),
+ *             @OA\Property(property="status", type="integer", nullable=false, example=200),
+ *             @OA\Property(property="message", type="string", nullable=false, example="OK"),
+ *             @OA\Property(property="timestamp", type="string", nullable=false, example="2024-11-06T08:05:38.486431+00:00"),
  *             @OA\Property(property="data", type="object", ref="#/components/schemas/RoleList", nullable=false)
  *         ),
  *         @OA\Schema(
