@@ -97,8 +97,6 @@ class RoleController extends ApiController
     public function actionIndex()
     {
         try {
-            $query_params = Yii::$app->request->get();
-
             // common search queries;
             $page = Yii::$app->request->get(HttpConstants::PAGE);
             $size = Yii::$app->request->get(HttpConstants::SIZE);
